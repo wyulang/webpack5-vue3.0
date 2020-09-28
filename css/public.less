@@ -1,0 +1,143 @@
+
+/*清除浮动*/
+.clearfix:before,
+.clearfix:after{
+  content: " ";
+  display: inline-block;
+  height: 0;
+  width: 100%;
+  clear: both;
+  visibility: hidden;
+}
+.clearfix{*zoom: 1;}
+.clear{clear:both;height:0;overflow:hidden;}
+ 
+*{ box-sizing: border-box;}
+.hand{cursor: pointer;}
+.inline-block {display: inline-block;}
+.show {display: block;}
+.hide {display: none;}
+.centers{text-align: center}
+.right{text-align: right}
+.left{text-align: left}
+.fl{float: left;}
+.fr{float: right}
+
+.v-t{vertical-align:top;}
+.v-b{vertical-align:bottom;}
+.v-m{vertical-align:middle;}
+
+.auto {overflow: auto;}
+.autox {overflow-x: auto;overflow-y: hidden;}
+.autoy {overflow-y: auto;overflow-x:hidden;}
+.hidden {overflow: hidden;}
+.scroll {overflow: scroll;}
+
+/* 清除字体样式 */
+.ff-no{
+  font-style:normal;
+  text-decoration:none
+}
+
+/* 下划线样式 */
+.ff-b{
+  text-decoration:underline ;
+}
+/* 删除线样式 */
+.ff-del{
+  text-decoration:line-through
+}
+/* 上划线样式 */
+.ff-t{
+  text-decoration:overline
+}
+
+.autoline(@line){
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-break: auto;
+  /*! autoprefixer: ignore next */
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: @line;
+}
+
+.line-1 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /*! autoprefixer: ignore next */
+  -webkit-box-orient: vertical;
+}
+
+.line-2 {.autoline(2);}
+.line-3 {.autoline(3);}
+.line-4 {.autoline(4);}
+.line-5 {.autoline(5);}
+.line-6 {.autoline(6);}
+
+
+
+.input{
+  flex: 1;
+  border: none;
+  outline: none;
+  color: #555;
+}
+
+/* 不换行 */
+.nowrap{
+  white-space:nowrap;
+}
+
+/* 强行换行 */
+.wrap{
+  word-wrap: break-word;
+  word-break:break-all;
+}
+
+.outline{outline:none};
+
+.op-0 {opacity: 0;}
+.op-1 {opacity: 0.1;}
+.op-2 {opacity: 0.2;}
+.op-3 {opacity: 0.3;}
+.op-4 {opacity: 0.4;}
+.op-5 {opacity: 0.5;}
+.op-6 {opacity: 0.6;}
+.op-7 {opacity: 0.7;}
+.op-8 {opacity: 0.8;}
+.op-9 {opacity: 0.9;}
+.op-10 {opacity: 1;}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes fade-in {
+  0% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.wrapper {
+  animation: fade-in;
+  animation-duration: 1s;
+  -webkit-animation: fade-in 1s;
+}
+
+.__valid_from{
+  .valid-input{
+    border: 1px solid red;
+  }
+  .valid{
+    input,select{
+      border: 1px solid red;
+    }
+  }
+}
