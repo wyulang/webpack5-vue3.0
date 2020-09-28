@@ -7,10 +7,14 @@ demo --- 常归项目
 
 demo2 --- typescript 项目
 
-启动 npm run dev demo 
+启动 
+
+npm run dev demo 
 
     npm run dev demo2
 
-打包 npm run build demo
+打包 
+
+npm run build demo
 
      npm run build demo2
