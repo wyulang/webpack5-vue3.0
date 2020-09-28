@@ -31,7 +31,7 @@ let webpackDevConfig = {
     open: false,
     contentBase: config.devPath,
     publicPath: "/",
-    hot: true,
+    // hot: true,
     compress: true,
     inline:true,
     noInfo: true,
@@ -40,6 +40,7 @@ let webpackDevConfig = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
     new FriendlyErrorsPlugin({
       compilationSuccessInfo: {
         messages: conlg
