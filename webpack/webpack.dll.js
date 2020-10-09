@@ -9,7 +9,7 @@ let webpackDll = {
   mode: 'production',
   entry: {
     vue: [
-      '@vue/runtime-dom/dist/runtime-dom.esm-bundler.js',
+      '@vue/runtime-dom',
       'vuex/dist/vuex.esm-bundler',
       'axios',
       'vue-router/dist/vue-router.esm-bundler'
@@ -26,7 +26,15 @@ let webpackDll = {
   optimization: {
     noEmitOnErrors: true,
     minimizer: [
-      new TerserPlugin()
+      new TerserPlugin({
+        parallel: 6,
+        sourceMap: true, // Must be set to true if using source-maps in production
+        terserOptions: {
+          compress: {
+            drop_console: true,
+          },
+        },
+      })
     ]
   },
   plugins: [

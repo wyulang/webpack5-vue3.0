@@ -1,15 +1,11 @@
-
 <template>
-  <div>
-    About rrrrr
-  </div>
+  <div>{{ message }}</div>
 </template>
 
 <script lang="ts">
-export default {
-  name: "About"
+import { Vue } from "vue-class-component";
+
+export default class App extends Vue {
+  message:string="wyulang"
 }
 </script>
-
-<style>
-</style>

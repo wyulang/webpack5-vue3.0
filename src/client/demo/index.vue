@@ -13,6 +13,9 @@ export default {
   methods: {
   },
   created() {
+    console.log(new Date().getTime());
+    console.log("========================================");
+    console.log(new Date().getTime());
   },
 };
 </script>

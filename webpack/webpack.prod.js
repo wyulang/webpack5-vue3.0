@@ -8,7 +8,6 @@ const chalk = require('chalk');
 const path = require('path');
 const config = require('./webpack.config.js');
 const _version = new Date().getTime();
-let HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const webpackProdConfig = {
   devtool: 'inline-cheap-source-map',
@@ -21,10 +20,18 @@ const webpackProdConfig = {
     chunkFilename: `js/chunk.[name].${_version}.js`,
   },
   optimization: {
-    noEmitOnErrors: true,
     minimize: true,
     minimizer: [
-      new TerserPlugin(),
+      new TerserPlugin({
+        parallel: 6,
+        terserOptions: {
+          compress: {
+            warnings:false,
+            drop_console: true,
+            drop_debugger:true,
+          },
+        },
+      }),
       new OptimizeCssAssetsPlugin({
         cssProcessor: require('cssnano')
       })

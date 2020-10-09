@@ -27,6 +27,10 @@ let webpackDevConfig = {
     filename: 'index.js',
     path: path.resolve(__dirname, 'dist')
   },
+  cache: {
+    type: 'filesystem',
+    store: 'pack'
+  },
   devServer: {
     open: false,
     contentBase: config.devPath,

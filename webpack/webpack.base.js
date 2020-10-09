@@ -1,6 +1,7 @@
 let HtmlWebpackPlugin = require('html-webpack-plugin');
 // compression-webpack-plugin
 // html-webpack-tags-plugin
+// webpack-parallel-uglify-plugin
 let config = require('./webpack.config.js');
 const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
@@ -13,7 +14,7 @@ let webpackBase = {
       'lib': path.join(config.root, 'lib/'),
       '@css': path.join(config.root, 'css'),
       '@component': path.join(config.root, 'src/component'),
-      'vue': '@vue/runtime-dom/dist/runtime-dom.esm-bundler',
+      'vue': '@vue/runtime-dom',
       'vuex': 'vuex/dist/vuex.esm-bundler',
       'vue-router': 'vue-router/dist/vue-router.esm-bundler',
       '@src': path.join(config.root, 'src')
@@ -70,16 +71,13 @@ let webpackBase = {
       use: 'vue-loader'
     },
     {
-      test: /\.ts$/,
+      test: /\.tsx?$/,
       exclude: /node_modules/,
       use: [
-        {
-          loader: "babel-loader",
-          options: { babelrc: true }
-        },
+        "babel-loader",
         {
           loader: "ts-loader",
-          options: { appendTsSuffixTo: [/\.vue$/] }
+          options: { appendTsxSuffixTo: [/\.vue$/] }
         }
       ]
     },
@@ -121,17 +119,17 @@ let webpackBase = {
   },
   plugins: [
     new VueLoaderPlugin(),
-    new webpack.DllReferencePlugin({
-      context: __dirname,
-      manifest: require('./vendor/vue-manifest.json'),
-      sourceType: 'umd',
-      scope: 'xyz'
-    }),
-    new AddAssetHtmlPlugin({
-      filepath: path.resolve(__dirname, './vendor/vue.library.js'),
-      publicPath: config.isProd ? "./js" : '../',
-      outputPath: config.isProd ? "js" : "",
-    })
+    // new webpack.DllReferencePlugin({
+    //   context: __dirname,
+    //   manifest: require('./vendor/vue-manifest.json'),
+    //   sourceType: 'umd',
+    //   scope: 'xyz'
+    // }),
+    // new AddAssetHtmlPlugin({
+    //   filepath: path.resolve(__dirname, './vendor/vue.library.js'),
+    //   publicPath: config.isProd ? "./js" : '../',
+    //   outputPath: config.isProd ? "js" : "",
+    // })
   ]
 }
 

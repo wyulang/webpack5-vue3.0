@@ -9,10 +9,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-export default defineComponent({
-  name: "App",
-});
+import { Vue } from "vue-class-component";
+
+export default class App extends Vue {
+  message:string="wyulang"
+
+}
 </script>
 
 <style lang="less">
