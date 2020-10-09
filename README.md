@@ -9,12 +9,12 @@ demo2 --- typescript 项目
 
 启动 
 
-npm run dev demo 
+    npm run dev demo 常归项目
 
-    npm run dev demo2
+    npm run dev demo2  typescript 项目
 
 打包 
 
-npm run build demo
+     npm run build demo   常归项目
 
-     npm run build demo2
+     npm run build demo2   typescript 项目
