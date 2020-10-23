@@ -2,6 +2,7 @@ npm cache clean --force
 
 本框架为纯属于，webpack5.0 + vue3.0 
 里面有两个DEMO
+webpack5讨论群66060257
 
 demo --- 常归项目
 
