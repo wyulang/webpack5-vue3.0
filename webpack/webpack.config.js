@@ -1,32 +1,6 @@
 const path = require('path');
 const fs = require('fs-extra');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const chalk = require('chalk');
-
-let [TARGET, clientItem] = [process.env.npm_lifecycle_event, process.argv[2]];
-if (TARGET == 'test') {
-  clientItem = process.argv[6];
-}
-const vueLoader = {
-  dev: "vue-style-loader",
-  demo: "vue-style-loader",
-  build: {
-    loader: MiniCssExtractPlugin.loader,
-    options: {
-      publicPath: '../',
-      hmr: TARGET == 'build', // 仅dev环境启用HMR功能
-    }
-  },
-  test: {
-    loader: MiniCssExtractPlugin.loader,
-    options: {
-      publicPath: '../',
-      hmr: TARGET == 'build', // 仅dev环境启用HMR功能
-    }
-  },
-  dll: MiniCssExtractPlugin.loader,
-};
-
 // 取本机IP地址
 const getIPAdress = () => {
   var interfaces = require('os').networkInterfaces();
@@ -40,45 +14,46 @@ const getIPAdress = () => {
     }
   }
 }
-
 //文件是否存在
 const isFile = v => {
   return fs.pathExistsSync(v);
 }
 
-//取webpack entry 路口
-const getEntry = () => {
-  let entryObj = {};
-  let isEmpty = "";
-  let cur = clientItem && clientItem.toString().replace('/[,，=]/', ',').split(',');
-  if (cur) {
-    for (let item of cur) {
-      let appPath = `${path.resolve(__dirname, '../src/client/')}\\${item}\\index.js`.replace(/[\\]/g, '/');
-      if (!isFile(appPath)) {
-        appPath = `${path.resolve(__dirname, '../src/client/')}\\${item}\\index.ts`.replace(/[\\]/g, '/');
-      }
-      if (isFile(appPath)) {
-        entryObj[item] = appPath;
-      } else {
-        isEmpty = item;
-      }
+const [TARGET, clientItem] = [process.env.npm_lifecycle_event, process.argv[2]];
+
+const vueLoader = {
+  dev: "vue-style-loader",
+  build: {
+    loader: MiniCssExtractPlugin.loader,
+    options: {
+      publicPath: '../'
     }
-  }
-  return isEmpty ? { error: chalk.red.bold(`client no find ${isEmpty} module`) } : entryObj;
-}
+  },
+  test: {
+    loader: MiniCssExtractPlugin.loader,
+    options: {
+      publicPath: '../'
+    }
+  },
+  pack: {
+    loader: MiniCssExtractPlugin.loader,
+    options: {
+      publicPath: '../',
+      hmr: TARGET == 'build', // 仅dev环境启用HMR功能
+    }
+  },
+  dll: MiniCssExtractPlugin.loader,
+};
 
 module.exports = {
   root: path.resolve(__dirname, '../'),
-  entry: getEntry(),
+  entry: path.resolve(__dirname, '../src/index.ts'),
   publicPath: '',
-  outPath: path.resolve(__dirname, '../dist'),
-  devPath: path.resolve(__dirname, '../build'),
+  outPath: path.resolve(__dirname, '../www'),
   devServer: getIPAdress() || 'localhost',
-  port: '6001',
+  port: '3008',
   isFile: isFile,
   getIPAdress: getIPAdress,
   vueLoader: vueLoader[TARGET],
-  isProd: TARGET == 'build',
-  host: '0.0.0.0',
-  clientItem: clientItem && clientItem.toString().replace('/[,，=]/', ',').split(','),
+  host:'0.0.0.0'
 }

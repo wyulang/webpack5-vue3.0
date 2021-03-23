@@ -1,14 +1,23 @@
 let HtmlWebpackPlugin = require('html-webpack-plugin');
-// compression-webpack-plugin
-// html-webpack-tags-plugin
-// webpack-parallel-uglify-plugin
 let config = require('./webpack.config.js');
 const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
 const webpack = require('webpack');
-const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-let webpackBase = {
+// const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
+// const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const _version = new Date().getTime();
+
+// happypack
+
+module.exports = {
+  entry: config.entry,
+  output: {
+    filename: 'js/bundle.js',
+    path: config.outPath,
+    publicPath: './',
+    chunkFilename: 'js/[name].' + _version + '.js',
+    library: '[name]_library'
+  },
   resolve: {
     alias: {
       'lib': path.join(config.root, 'lib/'),
@@ -58,11 +67,6 @@ let webpackBase = {
           }
         }, {
           loader: "less-loader",
-        }, {
-          loader: 'sass-resources-loader',
-          options: {
-            resources: path.join(config.root, 'css/base.less'),
-          }
         }
       ]
     },
@@ -84,10 +88,11 @@ let webpackBase = {
     {
       test: /\.js$/,
       use: {
-        loader: 'babel-loader'
-      },
-      exclude: /node_modules/,
-      // include: [process.cwd(), './src']
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env']
+        }
+      }
     },
     {
       test: /\.(gif|png|jpe?g|svg|ico)$/i,
@@ -121,43 +126,27 @@ let webpackBase = {
     new VueLoaderPlugin(),
     // new webpack.DllReferencePlugin({
     //   context: __dirname,
-    //   manifest: require('./vendor/vue-manifest.json'),
-    //   sourceType: 'umd',
-    //   scope: 'xyz'
+    //   manifest: require('./vendor/vue-manifest.json')
     // }),
+    new HtmlWebpackPlugin({
+      filename: `index.html`,
+      template: config.root + '/webpack/index.html',
+      title: 'demo',
+      prod: true,
+      hash: true,
+      minify: {
+        removeAttributeQuotes: true,
+        collapseWhitespace: true,
+        html5: true,
+        minifyCSS: true,
+        removeComments: true,
+        removeEmptyAttributes: true
+      }
+    }),
     // new AddAssetHtmlPlugin({
     //   filepath: path.resolve(__dirname, './vendor/vue.library.js'),
-    //   publicPath: config.isProd ? "./js" : '../',
-    //   outputPath: config.isProd ? "js" : "",
+    //   outputPath: 'js',
+    //   publicPath: './js'
     // })
   ]
 }
-
-let clearFile = [];
-for (item in config.entry) {
-  clearFile.push(`${item}/*`);
-  let templist = path.join(config.root, `./src/client/${item}/index.html`);
-  htmlConfig = {
-    template: templist,
-    inject: true,
-    title: 'wyulang',
-    host: config.distPath,
-    prod: false,
-  }
-  if (config.isProd) {
-    htmlConfig.filename = `index.html`;
-  } else {
-    htmlConfig.chunks = [item];
-    htmlConfig.filename = `${item}/index.html`;
-  }
-  webpackBase.plugins.push(
-    new HtmlWebpackPlugin(htmlConfig)
-  )
-}
-
-webpackBase.plugins.push(
-  new CleanWebpackPlugin()
-)
-
-
-module.exports = webpackBase;

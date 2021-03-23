@@ -1,0 +1,11 @@
+/*!
+  * vue-router v4.0.5
+  * (c) 2021 Eduardo San Martin Morote
+  * @license MIT
+  */
+
+/**
+  * vue-class-component v8.0.0-rc.1
+  * (c) 2015-present Evan You
+  * @license MIT
+  */
