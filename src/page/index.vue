@@ -9,7 +9,7 @@
 export default {
   setup () {
     return {
-      msg: '测试手搭webpack5.d'
+      msg: 'fddddd'
     }
   }
 }
