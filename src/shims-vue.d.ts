@@ -4,6 +4,7 @@ declare module "*.vue" {
   export default Component;
 }
 
+
 // declare module "vue/types/vue" {
 //   interface Vue {
 //       $http: any;

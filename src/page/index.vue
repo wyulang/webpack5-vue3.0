@@ -1,17 +1,15 @@
 
 <template>
   <div class="home">
-    {{msg}}
+    {{message}}
   </div>
 </template>
 
-<script>
-export default {
-  setup () {
-    return {
-      msg: 'fddddd'
-    }
-  }
+<script lang="ts">
+import { useChangeSort } from "@src/page/box";
+import { Vue } from "vue-class-component";
+export default class App extends Vue {
+  message: string = useChangeSort();
 }
 </script>
 <style >
