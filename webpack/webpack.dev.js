@@ -19,10 +19,6 @@ let webpackDevConfig = {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist')
   },
-  cache: {
-    type: 'filesystem',
-    store: 'pack'
-  },
   optimization: {
     splitChunks: {
       minSize: 20000,
