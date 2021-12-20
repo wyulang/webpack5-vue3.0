@@ -51,7 +51,7 @@ module.exports = {
   publicPath: '',
   outPath: path.resolve(__dirname, '../www'),
   devServer: getIPAdress() || 'localhost',
-  port: '3008',
+  port: '3009',
   isFile: isFile,
   getIPAdress: getIPAdress,
   vueLoader: vueLoader[TARGET],
