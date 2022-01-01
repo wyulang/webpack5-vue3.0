@@ -14,7 +14,7 @@
 "vue-property-decorator": "^10.0.0-rc.3",
 
 
-##本框架已开发了所属相关组件，如有需要可以联系我定制组件
+#本框架已开发了所属相关组件，如有需要可以联系我定制组件
 
 vue3 typescript组件库 在文件component 
 
