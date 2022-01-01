@@ -19,7 +19,7 @@ change(data){
   
   {value:111,item:item,type:'serch'}
   
-  其中item 为数组原对像如 {id:1,name:'下拉',creatime:'124124242',这些是后台所后的对像}
+  其中item 为数组原对像如 {id:1,name:'下拉',creatime:'124124242',这些是后台所返的对像}
 
   this.valuename=data.item.name;
   
