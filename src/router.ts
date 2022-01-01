@@ -5,7 +5,7 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 const routes = [
   {
     path: '/',
-    component: require('./page/index.vue').default,
+    component: () => import(/* webpackChunkName: "introduce" */ './page/index.vue'),
     name: 'home'
   }
 ];

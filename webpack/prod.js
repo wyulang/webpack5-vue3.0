@@ -1,24 +1,26 @@
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const { merge } = require('webpack-merge');
-const webpackbase = require('./webpack.base.js');
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const path = require('path');
+const webpackbase = require('./base.js');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const _version = new Date().getTime();
-const config = require('./webpack.config.js');
+const config = require('./config.js');
 const TerserPlugin = require('terser-webpack-plugin');//压缩代码
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const chalk = require('chalk');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const webpackProdConfig = {
-  devtool: 'inline-cheap-source-map',
+  devtool: 'nosources-source-map',
   mode: 'production',
   entry: config.entry,
   output: {
-    path: `${config.outPath}/`,
+    path: `${config.prodPath}/`,
     publicPath: './',
     filename: `js/[name].${_version}.js`,
     chunkFilename: `js/chunk.[name].${_version}.js`,
   },
+  stats: 'verbose',
   optimization: {
     minimize: true,
     minimizer: [
@@ -32,9 +34,7 @@ const webpackProdConfig = {
           },
         },
       }),
-      new OptimizeCssAssetsPlugin({
-        cssProcessor: require('cssnano')
-      })
+      new CssMinimizerPlugin(),
     ],
     splitChunks: {
       minSize: 20000,

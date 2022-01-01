@@ -1,0 +1,147 @@
+/*弹性布局 wrap  start  end  between  around  center  middle*/
+
+.flex {
+  display: flex;
+  display: -webkit-flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+}
+.flex-line {
+  display: inline-flex;
+  display: -webkit-inline-flex;
+}
+
+.flex-auto {flex: auto;}
+.flex-none {flex: none;}
+.if{display: inline-flex;}
+.flex-1{
+  flex: 1;
+  flex-grow: 1;
+}
+.flex-s{
+  flex-shrink: 0;
+}
+
+/* flex-direction */
+
+/* 主轴为水平方向，起点在左端 */
+.fd-r{
+  flex-direction:row;
+}
+/* 主轴为水平方向，起点在右端 */
+.fd-rr{
+  flex-direction:row-reverse;
+}
+/* 主轴为垂直方向，起点在上沿 */
+.fd-c{
+  flex-direction:column;
+}
+/* 主轴为垂直方向，起点在下沿 */
+.fd-cr{
+  flex-direction:column-reverse;
+}
+
+/* 不换行 */
+.fw-n{
+ flex-wrap: nowrap
+}
+/* 换行，第一行在上方 */
+.fw{
+ flex-wrap: wrap
+}
+/* 换行，第一行在下方 */
+.fw-wr{
+ flex-wrap: wrap-reverse
+}
+
+/* （默认值）：左对齐 */
+.jc-s{
+  justify-content: flex-start;
+}
+/* 右对齐 */
+.jc-e{
+  justify-content: flex-end;
+}
+/* 居中 */
+.jc-c{
+  justify-content:center;
+}
+/* 两端对齐 */
+.jc-b{
+  justify-content: space-between;
+}
+/* 每个项目两侧的间隔相等。所以，项目之间的间隔比项目与边框的间隔大一倍 */
+.jc-a{
+  justify-content: space-around;
+}
+
+/* 起点对齐 */
+.ai-s{
+  align-items: flex-start;
+}
+/* 终点对齐 */
+.ai-e{
+  align-items: flex-end;
+}
+/* 中点对齐 */
+.ai-c{
+  align-items: center;
+}
+/* 第一行文字的基线对齐 */
+.ai-b{
+  align-items: baseline;
+}
+/* （默认值） */
+.ai-st{
+  align-items: stretch;
+}
+
+
+/* 起点对齐 */
+.ac-s{
+  align-content: flex-start;
+}
+/* 终点对齐 */
+.ac-e{
+  align-content: flex-end;
+}
+/* 中点对齐 */
+.ac-c{
+  align-content: center;
+}
+/* 第一行文字的基线对齐 */
+.ac-b{
+  align-content: baseline;
+}
+/* （默认值） */
+.ac-st{
+  align-content: stretch;
+}
+
+
+/* 起点对齐 */
+.as-s{
+  align-self: flex-start;
+}
+/* 终点对齐 */
+.as-e{
+  align-self: flex-end;
+}
+/* 中点对齐 */
+.as-c{
+  align-self: center;
+}
+/* 第一行文字的基线对齐 */
+.as-b{
+  align-self: baseline;
+}
+/* （默认值） */
+.as-st{
+  align-self: stretch;
+}

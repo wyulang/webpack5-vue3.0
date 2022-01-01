@@ -1,11 +1,17 @@
 const webpack = require("webpack");
-const webpackConfig = require("./webpack.dev.js");
+const webpackConfig = require("./dev.js");
 let WebpackDevServer = require('webpack-dev-server');
-let config = require('./webpack.config.js');
+let config = require('./config.js');
 
 
 const compiler = webpack(webpackConfig);
-const devServerOptions = Object.assign({}, webpackConfig.devServer);
+const devServerOptions = Object.assign({
+  open: false,
+  port: config.port,
+  host: config.host,
+  liveReload: false,
+  hot: true
+});
 
 // Object.assign(devServerOptions, {
 //   proxy: {
@@ -17,6 +23,13 @@ const devServerOptions = Object.assign({}, webpackConfig.devServer);
 //   }
 // })
 
-const server = new WebpackDevServer(compiler, devServerOptions);
 
-server.listen(config.port, config.host, res => {});
+const server = new WebpackDevServer(devServerOptions, compiler);
+
+server.start(config.port, config.host, res => {
+  if(res) {
+    process.exit(0)
+  }
+});
+
+

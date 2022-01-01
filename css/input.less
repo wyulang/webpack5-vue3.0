@@ -1,0 +1,45 @@
+.ipt {
+  &::placeholder {
+    color: #c0c4cc
+  }
+
+  &:hover {
+    background-color: #fff;
+  }
+
+  &:disabled{
+    cursor:not-allowed;
+  }
+
+  &.ipt-big {
+    padding:0 (15 / @bs);
+    height: (38 / @bs);
+    border-radius: (5 / @bs);
+    font-size: (14 / @bs);
+    border: 1px solid #ddd;
+  }
+
+  &.ipt-small {
+    padding:0 (12 / @bs);
+    height: (32 / @bs);
+    border-radius: (4 / @bs);
+    font-size: (13 / @bs);
+    border: 1px solid #ddd;
+  }
+
+  &.ipt-auto{
+    border-radius: (4 / @bs);
+    font-size: (13 / @bs);
+    border: 1px solid #ddd;
+  }
+
+  &.ipt-empty{
+    padding:0 (3 / @bs);
+    font-size: (13 / @bs);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #409eff;
+  }
+}
