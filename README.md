@@ -40,7 +40,7 @@ change(data){
 - "vue-property-decorator": "^10.0.0-rc.3",
 
 # 安装依赖
-npm install
+npm install 或 npm i
 
 # 进入开发
 npm run dev
