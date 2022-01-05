@@ -29,7 +29,7 @@ module.exports = {
   devPath: path.resolve(__dirname, '../dist'),
   prodPath: path.resolve(__dirname, '../www'),
   devServer: getIPAdress() || 'localhost',
-  port: '3003',
+  port: '3006',
   isFile: isFile,
   isProd: TARGET == 'build',
   getIPAdress: getIPAdress,

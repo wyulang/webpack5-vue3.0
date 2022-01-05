@@ -1,12 +1,9 @@
 <template>
-  <div style="padding:50px">
-    <div class="mb20 fs-30 fb red">动态表生成器</div>
-    <tables @change="change" :list="list" :data="{glade:glade}" v-model="value1"></tables>
+  <div class="mb20 fs-30 fb red">动态表生成器</div>
+  <tables @change="change" :list="list" :data="{glade:glade}" v-model="value1"></tables>
 
-    <div style="font-size:18px; margin-top:30px">返回的数组值：{{value1}}</div>
-    <div style="margin-top:30px;font-size:18px;">提交状态:{{check}} <span style="color:red">status为false 代表有空值，line:说明第几行，messsage：哪个字段为空</span></div>
-
-  </div>
+  <div style="font-size:18px; margin-top:30px">返回的数组值：{{value1}}</div>
+  <div style="margin-top:30px;font-size:18px;">提交状态:{{check}} <span style="color:red">status为false 代表有空值，line:说明第几行，messsage：哪个字段为空</span></div>
 </template>
 
 <script lang='ts'>
@@ -38,8 +35,8 @@ export default class App extends Vue {
     { type: 'id', field: 'id' },
   ]
 
-  change(v){
-    this.check=v;
+  change(v) {
+    this.check = v;
   }
 
   mounted() {
