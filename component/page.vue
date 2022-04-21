@@ -44,10 +44,11 @@ import { Vue, Prop, Emit } from 'vue-property-decorator';
 export default class App extends Vue {
   @Prop({ type: [Number, String], default: 10 }) size;
   @Prop({ type: [Number, String], default: 10 }) pageSize;
-  @Prop({ type: [Number, String], default: 7 }) pager;
+  @Prop({ type: [Number, String], default: 8 }) pager;
   @Prop({ type: [Number, String], default: 0 }) total;
+  @Prop({ type: Number, default: 1 }) page;
   @Prop({ type: String, default: "#409eff" }) color;
-  page: number = 1;
+  currpage: number = 1;
 
   get count() {
     let total = Number(this.total);
@@ -59,11 +60,14 @@ export default class App extends Vue {
     }
   }
 
+  get half() {
+    return ((this.pager % 2 ? this.pager - 1 : this.pager) / 2)-1
+  }
+
   // 是否显示-跳到前几页
   get isPrev() {
-    const half = ((this.pager % 2) ? this.pager : (this.pager + 1)) / 2
     if (this.count > this.pager) {
-      if (this.page > this.pager - half) {
+      if (this.page > this.pager - this.half) {
         return true
       }
     }
@@ -72,9 +76,8 @@ export default class App extends Vue {
 
   // 是否显示-跳到下几页
   get isNext() {
-    const half = ((this.pager % 2) ? this.pager : (this.pager + 1)) / 2
     if (this.count > this.pager) {
-      if (this.page < this.count - half) {
+      if (this.page < this.count - this.half) {
         return true
       }
     }
@@ -138,7 +141,7 @@ export default class App extends Vue {
       }
     }
 
-    this.page = newPage;
+    // this.currpage = newPage;
     this.handSelect(newPage)
   }
 
@@ -150,5 +153,6 @@ export default class App extends Vue {
   get styles() {
     return `color:#fff;background-color:${this.color}`;
   }
+
 }
 </script>

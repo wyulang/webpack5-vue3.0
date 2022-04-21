@@ -1,6 +1,6 @@
 <template>
   <div class="flex-line">
-    <div @click="handSelect(item)" v-for="(item, index) in path" :key="index" class="flex-line hand ai-c mr10">
+    <div @click="handSelect(item)" v-for="(item, index) in path" :key="index" :style="{'cursor':item.disabled?'not-allowed':''}" class="flex-line hand ai-c mr10">
       <svg t="1610071219114" class="icon" :style="{'fill':color[setColor(item)]}" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="13328" width="20" height="20">
         <path v-if="!setColor(item)"
           d="M512 938.666667C276.352 938.666667 85.333333 747.648 85.333333 512S276.352 85.333333 512 85.333333s426.666667 191.018667 426.666667 426.666667-191.018667 426.666667-426.666667 426.666667z m0-85.333334a341.333333 341.333333 0 1 0 0-682.666666 341.333333 341.333333 0 0 0 0 682.666666z m0-128a213.333333 213.333333 0 1 1 0-426.666666 213.333333 213.333333 0 0 1 0 426.666666z">
@@ -14,14 +14,21 @@
 
 <script lang='ts'>
 import { Vue, Prop, Model, Emit } from 'vue-property-decorator';
+import { isString, isArray, isObject } from '../../lib/lang';
 export default class App extends Vue {
   @Prop({ type: Array, default: [] }) data;
   @Prop({ type: [Array, String], default: ['#3699ff', '#888'] }) color;
   @Prop({ type: [Array, String], default: [] }) icon;
+  @Prop({ type: Boolean, default: false }) disabled;
   @Model('modelValue', { type: [String, Number, Boolean], default: "" }) value;
+  // 取值 props="name,id" 对应的是 label,value
+  @Prop({ type: [String, Object, Array], default: "" }) props;
+  //禁用列表 禁用哪些值如:[1,2]
+  @Prop({ type: Array }) exclude;
 
   @Emit('change')
   handSelect(item) {
+    if (item.disabled) return;
     this.$emit('update:modelValue', item.value);
     return item.value
   }
@@ -29,9 +36,13 @@ export default class App extends Vue {
   get path() {
     let list = [];
     list = this.data.map(v => {
-      let opt = v;
+      let opt = {};
       if (typeof v == "string") {
-        opt = { label: v, value: v };
+        let disabled = this.exclude && this.exclude.map(v => String(v)).includes(String(v)) || false;
+        opt = { label: v, value: v, disabled };
+      } else {
+        let disabled = this.exclude && this.exclude.map(v => String(v)).includes(String(v)) || false;
+        opt = { ...v, label: v[this.parm.label], value: v[this.parm.value], disabled }
       }
       return opt
     })
@@ -46,6 +57,33 @@ export default class App extends Vue {
     } else {
       return 1;
     }
+  }
+
+  get parm() {
+    let label = "label";
+    let value = "value";
+    if (this.props) {
+      if (isString(this.props)) {
+        let obj = this.props.split(',');
+        if (obj[0]) {
+          label = obj[0];
+        }
+        if (obj[1]) {
+          value = obj[1]
+        }
+      } else if (isArray(this.props)) {
+        if (this.props[0]) {
+          label = this.props[0];
+        }
+        if (this.props[1]) {
+          value = this.props[1]
+        }
+      } else if (isObject(this.props)) {
+        label = this.props.label;
+        value = this.props.value;
+      }
+    }
+    return { label, value }
   }
 }
 </script>

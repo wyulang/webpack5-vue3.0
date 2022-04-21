@@ -5,7 +5,7 @@
         <path :d="curricon[type]"></path>
       </svg>
       <span v-if="icon" class="iconfont mr10 icon"></span>
-      <div v-html="message"></div>
+      <div class="fs-13" v-html="message"></div>
     </section>
   </transition>
 

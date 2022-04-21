@@ -155,6 +155,9 @@ export default class App extends Vue {
 
   mounted() {
     this.initSelect();
+    if (!this.expan) {
+      this.getInitData()
+    }
   }
 
   updated() {
@@ -182,23 +185,17 @@ export default class App extends Vue {
       }
       return ""
     }
-    if (this.loadType == 1) {
-      if (this.lazy) {
-        if (this.data.length) {
-          if (this.only) {
-            this.getOnlyPath(this.data)
-          } else {
-            this.getFullPath(this.data)
-          }
-        }else{
-          this.getInitData()
-        }
+
+    let currValue = this.only ? String(this.valueSelect.map(v => v[this.parm.value]).reverse()[0]) : String(this.valueSelect.map(v => v[this.parm.value]));
+    if (String(this.value) != currValue && this.isEnd && this.only) {
+      this.isEnd = false;
+    }
+    if (this.loadType == 1 || String(this.value) != currValue) {
+      // this.isEnd=false;
+      if (this.only) {
+        this.getOnlyPath(this.data)
       } else {
-        if (this.only) {
-          this.getOnlyPath(this.data)
-        } else {
-          this.getFullPath(this.data)
-        }
+        this.getFullPath(this.data)
       }
     }
     this.nodeValue = this.nodeSelect.map(v => v[this.parm.value]);
@@ -210,8 +207,22 @@ export default class App extends Vue {
     }
   }
 
-  getInitData(){
-    
+  getInitData() {
+    if (this.lazy && this.value.length) {
+      this.value.forEach((item, index) => {
+        this.lazy(item).then(res => {
+          let dal = {
+            len: res.length,
+            list: res,
+            value: item,
+            label: res.find(f => f[this.parm.value] == item)[this.parm.label]
+          }
+          this.nodeSelect[index] = Object.assign({}, dal);
+          delete dal.list;
+          this.valueSelect[index] = Object.assign({}, dal);
+        })
+      })
+    }
   }
 
   onNodeSelect(data) {
@@ -301,6 +312,8 @@ export default class App extends Vue {
       curr = null;
       if (String(item[this.parm.value]) === String(this.value)) {
         let currList = this.onlyValue.slice(0, len + 1);
+        this.nodeSelect = [];
+        this.valueSelect = [];
         this.nodeSelect = JSON.parse(JSON.stringify([].concat(currList)));
         this.valueSelect = JSON.parse(JSON.stringify([].concat(currList.map(v => { delete v.list; return v }))));
         this.onlyValue = [];

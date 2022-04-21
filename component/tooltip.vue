@@ -49,6 +49,7 @@ export default class App extends Vue {
       'background-color': this.bcolor,
       'color': this.fcolor,
       'max-width': maxWidth,
+      'z-index':2222,
       ...position
     }
   }

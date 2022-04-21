@@ -4,7 +4,7 @@ import spinnerel from './spinne.vue';
 let container: null | HTMLElement;
 let body: any | HTMLElement;
 let target = true;
-let zindex = 8888;
+let zindex = 9222;
 
 const destroy = () => {
   if (container) {
@@ -14,8 +14,8 @@ const destroy = () => {
       if (!target) {
         body.className = body.className.replace(" rel", "");
       }
+      body.removeChild(container);
     }
-    body.removeChild(container);
     body = null;
     container = null;
     target = true;
@@ -29,9 +29,9 @@ const _render = (props: any = {}) => {
   zindex++;
   let className = "__loading-content w-all h-all flex ai-c jc-c"
   target = true;
-  body = document.body as HTMLElement;
+  body = document.body ;
   if (props.target && typeof props.target === 'string' && document.getElementById(props.target)) {
-    body = document.getElementById(props.target) as HTMLElement;
+    body = document.getElementById(props.target) ;
     className += " abs"
     target = false;
     if (!body.className.includes('rel')) {
@@ -47,7 +47,7 @@ const _render = (props: any = {}) => {
   }
   container = document.createElement('section')
   container.className = className;
-  container.style.zIndex=String(zindex);
+  container.style.zIndex = String(zindex);
   const vm = createVNode(spinnerel, props);
   render(vm, container);
   body.appendChild(container);

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isRel" :class="class" class="_upfile h-all">
+  <div v-if="isRel" @click="btnBefore" :class="class" class="_upfile h-all">
     <div v-if="type=='slot'" class="w-all rel h-all">
       <input ref="input" @change="upfileImage(1)" title=" " :accept="accept" class="abs op-0 fs-0 zi-110 w-all hand at0 ab0 ar0 ab0" type="file">
       <div class="w-all rel zi-100 h-all">
@@ -10,16 +10,16 @@
       <input ref="input" @change="upfileImage(1)" title=" " :accept="accept" class="abs op-0 fs-0 zi-140 w-all hand at0 ab0 ar0 ab0" type="file">
       <div v-if="!value" class="flex ai-c jc-c fd-c">
         <span v-if="!icon" class="fs-20">
-          <svg t="1624601223915" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2400" width="20" height="20">
+          <svg viewBox="0 0 1024 1024" style="fill:#999" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2400" width="20" height="20">
             <path
-              d="M906.212134 565.732986 565.732986 565.732986 565.732986 906.212134C565.732986 926.013685 541.666486 959.972 511.97312 959.972 482.297674 959.972 458.213254 926.013685 458.213254 906.212134L458.213254 565.732986 117.734106 565.732986C97.950475 565.732986 63.97424 541.666486 63.97424 511.97312 63.97424 482.279754 97.950475 458.213254 117.734106 458.213254L458.213254 458.213254 458.213254 117.734106C458.213254 97.950475 482.297674 63.97424 511.97312 63.97424 541.666486 63.97424 565.732986 97.950475 565.732986 117.734106L565.732986 458.213254 906.212134 458.213254C925.995765 458.213254 959.972 482.279754 959.972 511.97312 959.972 541.666486 925.995765 565.732986 906.212134 565.732986Z"
-              fill="#999" p-id="2401"></path>
+              d="M906.212134 565.732986 565.732986 565.732986 565.732986 906.212134C565.732986 926.013685 541.666486 959.972 511.97312 959.972 482.297674 959.972 458.213254 926.013685 458.213254 906.212134L458.213254 565.732986 117.734106 565.732986C97.950475 565.732986 63.97424 541.666486 63.97424 511.97312 63.97424 482.279754 97.950475 458.213254 117.734106 458.213254L458.213254 458.213254 458.213254 117.734106C458.213254 97.950475 482.297674 63.97424 511.97312 63.97424 541.666486 63.97424 565.732986 97.950475 565.732986 117.734106L565.732986 458.213254 906.212134 458.213254C925.995765 458.213254 959.972 482.279754 959.972 511.97312 959.972 541.666486 925.995765 565.732986 906.212134 565.732986Z">
+            </path>
           </svg>
         </span>
         <span :class="icon" v-else class="iconfont"></span>
-        <span v-if="tip" class="fs-12 wrap centers fc-999 pl20 pr20">{{tip}}</span>
+        <span v-if="tip" class="fs-12 tip wrap centers fc-999 pl20 pr20">{{tip}}</span>
       </div>
-      <div v-else :style="{'background-image':`url('${value}')`}" class="w-all   bs-c rel ra-5 h-all flex-1">
+      <div v-else :style="{'background-image':`url('${value}')`}" class="w-all bc-f6  bs-c rel ra-5 h-all flex-1">
         <div class="w-all abs al0 boxs ra-5  h-all ba-3 ra-6 ai-c jc-c">
           <svg t="1624603187836" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7147" width="16" height="16">
             <path
@@ -46,23 +46,45 @@
 import { Vue, Prop, Model } from 'vue-property-decorator';
 export default class App extends Vue {
   @Prop({ type: String, default: 'image' }) type;
+  // 上传索引，主要针对for list 里的index 传什么返回什么
   @Prop({ type: [String, Number], default: 0 }) index;
-  // 当一个页面多次使用时可用这个返回类型
-  @Prop({ type: String, default: '' }) ftype;
+  // 上传文件大小
+  @Prop({ type: [String, Number], default: 0 }) max;
+  // 当一个页面多次使用时可用这个返回类型 传什么返回什么 同index 参数相同，可以用index,也可以用ftype来进行判断
+  @Prop({ type: [String,Object], default: '' }) ftype;
+  // 框内提示语
   @Prop({ type: String, default: '' }) tip;
+  // 框内ICON 图标
   @Prop({ type: String, default: '' }) icon;
+  // 上传CSS
   @Prop({ type: String, default: 'w-all' }) class;
+  // 上传文件类型
   @Prop({ type: String, default: 'image/gif,image/jpeg,image/jpg,image/png,image/svg' }) accept;
+  // 上传后返回的值
   @Model('modelValue', { type: [String, Number, Boolean], default: "" }) value;
+  // 上传事件
   @Prop({ type: Function }) upSuccess;
-  isRel=true;
+  // 上传前事件
+  @Prop({ type: Function }) beforeUpload;
+  isRel = true;
+  btnBefore(e) {
+    if (this.beforeUpload && this.beforeUpload()) {
+      e.preventDefault();
+    }
+  }
   upfileImage() {
     let input: any = this.$refs.input;
     let files = input.files;
-    this.upSuccess(files[0], this.ftype, this.index)
-    this.isRel=false;
-    this.$nextTick(()=>{
-      this.isRel=true;
+    let max = Number(this.max);
+    let isMax = false;
+    if (max && files[0].size > max) {
+      isMax = true
+    }
+
+    this.upSuccess(files[0], this.ftype, this.index, { isMax })
+    this.isRel = false;
+    this.$nextTick(() => {
+      this.isRel = true;
     })
   }
 }
@@ -74,6 +96,12 @@ export default class App extends Vue {
     border: 1px dashed #ddd;
     &:hover {
       border-color: #409eff;
+      svg {
+        fill: #409eff !important;
+      }
+      .tip{
+        color: #409eff !important;
+      }
     }
   }
   .tis-value {

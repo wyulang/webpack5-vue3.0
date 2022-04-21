@@ -4,7 +4,7 @@
       <div v-if="isModel" @click="fullClose&&closeWin()" :style="{'z-index':zindex+1}" class="model"></div>
       <section :id="'dig'+(zindex+1)" ref='dialog' class="_dialog_body" :style='bodyStyle'>
         <!-- 头部 -->
-        <div v-if="isHeader" id="fy-dialog" class="_dialog_title" data-type='move'>
+        <div v-if="isHeader" :id="'fy-dialog'+zindex" class="_dialog_title" data-type='move'>
           <span v-html="title"></span>
           <div @click.stop="closeWin">
             <span class="_diglog_close">✖</span>
@@ -44,7 +44,7 @@ export default class dig extends Vue {
   top: Number = 0;
   left: Number = 0;
   max: Boolean = false;
-  zindex: Number = 1000;
+  zindex: Number = 9000;
   currWidth = 0;
   currHeight = 0;
   isFirst = true;
@@ -143,7 +143,7 @@ export default class dig extends Vue {
     if (this.$refs.dialog && this.value) {
       this.currWidth = (this.$refs.dialog as HTMLElement).offsetWidth;
       this.currHeight = (this.$refs.dialog as HTMLElement).offsetHeight;
-      document.getElementById('fy-dialog')?.addEventListener('mousedown', this.startMove)
+      document.getElementById('fy-dialog' + this.zindex)?.addEventListener('mousedown', this.startMove)
     }
   }
 }

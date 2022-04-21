@@ -15,8 +15,8 @@
       <div :style="{'top':`${options.inputHeight+4}px`}" v-show="visible" class="_selects_dropdown abs zi-8888 ra-5 hidden ar0 al0">
         <scrollbar :auto="options.valueHeight" v-if="isRefresh" maxHeight="220">
           <div v-if="path.length" class="flex ra-5 hidden bc-fff w-all fd-c">
-            <div :class="{'_is_select fb':currValue.value==item.value}" @click="selectItem(item)" v-for="(item,index) in path" class="hand h-34">
-              <slot>
+            <div :class="{'_is_select fb':currValue.value==item.value,'is_dis':(item.disabled&&currValue.value!=item.value)}" @click="selectItem(item)" v-for="(item,index) in path" class="hand h-34">
+              <slot :item="item">
                 <div :class="setStyle(item)" class="flex  h-all w-all pl15 ai-c">{{item.label}}</div>
               </slot>
             </div>
@@ -32,7 +32,7 @@
 
 <script lang='ts'>
 import { Vue, Prop, Model, Ref, Options, Emit } from 'vue-property-decorator';
-import { isString, isArray, isObject } from '@lib/lang';
+import { isString, isArray, isObject } from '../../lib/lang';
 import scrollbar from './scroll.vue';
 @Options({
   components: {
@@ -48,6 +48,7 @@ export default class App extends Vue {
   @Prop({ type: Boolean, default: false }) clear;
   @Model('modelValue', { type: [String, Number, Boolean], default: "" }) value;
   @Prop({ type: String, default: "" }) placeholder;
+  // 取值 props="name,id" 对应的是 label,value
   @Prop({ type: [String, Object, Array], default: "" }) props;
   // 禁用
   @Prop({ type: Boolean, default: false }) disabled;
@@ -73,7 +74,7 @@ export default class App extends Vue {
   }
 
   get currValue() {
-    let item = this.path.find((v, i) => { return v.value === this.value });
+    let item = this.path.find((v, i) => { return String(v.value) === String(this.value) });
     if (this.lazyValue && this.isLazy) {
       return { label: this.lazyValue, value: this.lazyValue }
     }

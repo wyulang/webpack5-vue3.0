@@ -63,12 +63,12 @@ export default class App extends Vue {
   //当未设height/maxHeight时，取父级高度，直到取到高度为止
   getPrentHeight(el) {
     if (el) {
-      if (el.parentNode&&el.parentNode.clientHeight) {
+      if (el.parentNode && el.parentNode.clientHeight) {
         return el.parentNode.clientHeight
       } else {
         this.getPrentHeight(el.parentNode)
       }
-    }else{
+    } else {
       return 0
     }
   }
@@ -76,7 +76,7 @@ export default class App extends Vue {
   initHeight() {
     let curr = 0;
     if (this.main) {
-      this.bodyHeight = this.main.firstElementChild&&this.main.firstElementChild.scrollHeight;
+      this.bodyHeight = this.main.firstElementChild && this.main.firstElementChild.scrollHeight;
       curr = this.main.firstChild.clientHeight || this.getPrentHeight(this.$el)
     }
     if (this.mheight) {
@@ -99,8 +99,8 @@ export default class App extends Vue {
   }
 
   updated() {
-    let curr = this.main.firstChild.scrollHeight || 0;
-    if (curr > this.bodyHeight && this.bodyHeight) {
+    let curr = this.main.firstElementChild.scrollHeight || 0;
+    if (this.bodyHeight && curr != this.bodyHeight) {
       this.initHeight();
     }
   }
@@ -117,7 +117,7 @@ export default class App extends Vue {
   @Ref('main') wrap;
   onScroll(e) {
     if (this.wrap) {
-      this.moveY = (this.wrap.scrollTop * 100) / this.mainHeight
+      this.moveY = (this.wrap.scrollTop * 100) / this.mainHeight;
       let isBottom = (this.mainHeight + this.wrap.scrollTop) == this.bodyHeight
       this.changeScroll({
         scrollTop: this.moveY,

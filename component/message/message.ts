@@ -5,7 +5,7 @@ import MessageMsg from './msg.vue';
 
 let seed = 0;
 let instances: any = [];
-let zindex = 8888;
+let zindex = 9111;
 
 const Message = (opts, callback = null) => {
   if (typeof opts === 'string') {

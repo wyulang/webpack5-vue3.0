@@ -66,7 +66,7 @@ export default class App extends Vue {
 
   initData() {
     this.$nextTick(() => {
-      let message = this.$el.parentElement.querySelector('.message');
+      let message = this.$el.parentElement&&this.$el.parentElement.querySelector('.message');
       if (message) {
         this.loadWidth = message.clientWidth;
       }
