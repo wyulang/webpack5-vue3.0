@@ -420,7 +420,7 @@ export default class datepick extends Vue {
     } else {
       this.off = {
         width: document.body.scrollWidth,
-        height: document.body.scrollHeight
+        height: window.screen.availHeight ||document.documentElement.clientHeight||document.body.clientHeight
       }
     }
     // if (this.value) {
