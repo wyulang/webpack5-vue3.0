@@ -32,7 +32,7 @@
 
 <script lang='ts'>
 import { Vue, Prop, Model, Ref, Options, Emit } from 'vue-property-decorator';
-import { isString, isArray, isObject } from '../../lib/lang';
+import { isString, isArray, isObject } from '@lib/lang';
 import scrollbar from './scroll.vue';
 @Options({
   components: {

@@ -9,7 +9,7 @@
 
 <script lang='ts'>
 import { Vue, Prop, Model, Emit } from 'vue-property-decorator';
-import { isString, isArray, isObject } from '../../lib/lang';
+import { isString, isArray, isObject } from '@lib/lang';
 export default class App extends Vue {
   @Model('modelValue', { type: [String, Number, Boolean], default: "" }) value;
   @Prop({ type: [Array, String, Object], default: { value: true, label: "是" } }) open;

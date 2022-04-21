@@ -20,7 +20,7 @@
 
 <script lang='ts'>
 import { Vue, Prop, Model, Emit, Options } from 'vue-property-decorator';
-import { isString, isArray, isObject } from '../../lib/lang';
+import { isString, isArray, isObject } from '@lib/lang';
 import scrollbar from './scroll.vue';
 @Options({
   components: {
