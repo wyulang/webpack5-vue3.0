@@ -39,7 +39,9 @@ export default class App extends Vue {
   // circle/dashboard 类型路径两端的形状
   @Prop({ type: Boolean, default: false }) textInside;
   @Prop({ type: Function }) format;
+  // 进度条颜色
   @Prop({ type: [String, Array, Function], default: '' }) color;
+  // 背景条颜色
   @Prop({ type: String, default: '#ebeef5' }) bc;
 
   get barStyle() {

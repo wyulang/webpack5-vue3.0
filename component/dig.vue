@@ -26,14 +26,23 @@
 <script lang='ts'>
 import { Vue, Prop, Model, Watch, Ref } from 'vue-property-decorator';
 export default class dig extends Vue {
+  // 内容区以外是否可以点击关闭
   @Prop({ default: true, type: Boolean }) fullClose;
+  // 是否显示标题头
   @Prop({ default: true, type: Boolean }) isHeader;
-  @Prop({ default: true, type: Boolean }) isModel;//显示遮罩层？
+  //显示遮罩层？
+  @Prop({ default: true, type: Boolean }) isModel;
+  // 宽度
   @Prop({ default: "300", type: [String, Number] }) width;
+  // 最大宽度
   @Prop({ default: "300", type: [String, Number] }) maxWidth;
+  // 最小宽度
   @Prop({ default: "100", type: [String, Number] }) minWidth;
+  // 高度
   @Prop({ default: 100, type: [String, Number] }) height;
+  // 标题可以是html 如<span class='red'>标题</span>
   @Prop({ default: '标题', type: String }) title;
+  // 显示/关闭
   @Model('modelValue', { type: Boolean, default: false }) value!: boolean
   @Ref('dialog') dialog;
 

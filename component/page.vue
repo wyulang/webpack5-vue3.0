@@ -42,11 +42,17 @@
 <script lang='ts'>
 import { Vue, Prop, Emit } from 'vue-property-decorator';
 export default class App extends Vue {
+  // 一页个数
   @Prop({ type: [Number, String], default: 10 }) size;
+  // 一页个数兼容老数据 同size一个作用
   @Prop({ type: [Number, String], default: 10 }) pageSize;
+  // 分页码多少个页码出现...更多
   @Prop({ type: [Number, String], default: 8 }) pager;
+  // 总数据
   @Prop({ type: [Number, String], default: 0 }) total;
+  // 当前页码
   @Prop({ type: Number, default: 1 }) page;
+  // 背景色
   @Prop({ type: String, default: "#409eff" }) color;
   currpage: number = 1;
 

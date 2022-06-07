@@ -64,7 +64,7 @@ export default class App extends Vue {
   @Model('modelValue', { type: [String, Number, Boolean], default: "" }) value;
   // 上传事件
   @Prop({ type: Function }) upSuccess;
-  // 上传前事件
+  // 上传前事件 必需返回 return falas|true
   @Prop({ type: Function }) beforeUpload;
   isRel = true;
   btnBefore(e) {

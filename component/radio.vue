@@ -14,7 +14,7 @@
 
 <script lang='ts'>
 import { Vue, Prop, Model, Emit } from 'vue-property-decorator';
-import { isString, isArray, isObject } from '@lib/lang';
+import { isString, isArray, isObject } from '../../lib/lang';
 export default class App extends Vue {
   @Prop({ type: Array, default: [] }) data;
   @Prop({ type: [Array, String], default: ['#3699ff', '#888'] }) color;

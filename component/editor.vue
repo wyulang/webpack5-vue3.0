@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'fixed al0 ab0 at0 al0':isScreen}" data="editor" class="w-all rel flex bc-fff hidden fd-c ra-5 editor sha-card h-all">
+  <div :class="{'fixed al0 ab0 at0 al0':isScreen}" data="editor" class="w-all rel flex bc-fff fd-c ra-5 editor sha-card h-all">
     <div class="w-all bb-e flex ai-c pb3 pl3 fw">
       <div v-for="(item, index) in icons" class="rel" :class="item.name" :key="index">
         <div v-if="!exclude.includes(item.name)" :title="item.title" onmousedown="return false" @click="btnAction(item)" class="w-28 h-28 flex ai-c jc-c ra-3 mt3 bc-fff mr3 hand lh-25 centers b-d" type="button">
@@ -7,12 +7,12 @@
             <path :d="item.icon"></path>
           </svg>
         </div>
-        <div v-if="isModle=='fs'&&item.select" class="abs al0 at29">
+        <div v-if="isModle=='fs'&&item.select" class="abs al0 zi-100 at29">
           <ul @click="btnFontSize" class="sha-6 mt10 w-100 bc-fff pp10 h-130 autoy flex fw jc-b ra-5">
             <li :data-fs="index+1" v-for="(item, index) in fontSize" class="w-38 h-25 b-e flex ai-c hand jc-c ra-5 fs-12 fc-999 mt2" :key="index">{{item}}px</li>
           </ul>
         </div>
-        <div v-if="isModle=='header'&&item.select" class="abs al0 at29">
+        <div v-if="isModle=='header'&&item.select" class="abs al0 zi-100 at29">
           <div @click="btnHeader" class="sha-6 w-85 mt10 bc-fff pp10 flex fd-c ra-5">
             <h1 data-item='h1' class="pp10 hand">h1</h1>
             <h2 data-item='h2' class="pp10 hand">h2</h2>
@@ -22,14 +22,14 @@
             <h6 data-item='h6' class="pp10 hand">h6</h6>
           </div>
         </div>
-        <div v-if="isModle=='link'&&item.select" class="abs al0 at39">
+        <div v-if="isModle=='link'&&item.select" class="abs al0 zi-100 at39">
           <div class="w-250 bc-fff flex fd-c sha-5 pp15">
             <span class="fb mb5">插入链接</span>
             <input v-model="linkText" placeholder="请输入网址如https://wwww.xx.cn" class="ipt ipt-small" type="text">
             <div @click="btnLink" class="btn centers pt5 pb5 mt5 btn-primary w-50 ra-3">插入</div>
           </div>
         </div>
-        <div v-if="isModle=='table'&&item.select" class="abs al0 at39">
+        <div v-if="isModle=='table'&&item.select" class="abs al0 zi-100 at39">
           <div class="w-200 bc-fff flex fd-c sha-5 pp15">
             <span class="fb mb10">插入表格</span>
             <div class="flex ai-c">
@@ -39,7 +39,7 @@
             <div @click="btnTable" class="btn centers pt5 pb5 mt10 btn-primary w-50 ra-3">插入</div>
           </div>
         </div>
-        <div v-if="(isModle=='fc'||isModle=='bc')&&item.select" class="abs al0 at29">
+        <div v-if="(isModle=='fc'||isModle=='bc')&&item.select" class="abs al0 zi-100 at29">
           <div @click="btnColor" class="sha-6 mt10 bc-fff pp10 flex fd-c ra-5">
             <div class="fs-13"><span class="fs-12 fc-aa">{{isModle=='fc'?'字体颜色':'背景颜色'}}</span></div>
             <ul class="flex w-200 mt10 jc-b ai-c">
@@ -56,7 +56,7 @@
             </ul>
           </div>
         </div>
-        <div v-if="isModle=='image'&&item.select" class="abs al0 at29">
+        <div v-if="isModle=='image'&&item.select" class="abs al0 zi-100 at29">
           <div class="sha-6 w-200 mt10 bc-fff pp10 flex fd-c ra-5">
             <div class="flex h-27 bb-e ai-c">
               <span @click="imageType=1" :class="{'fb bb-3':imageType==1}" class="w-60 hand centers h-all">上传图片</span>
@@ -86,21 +86,16 @@
       </div>
     </div>
     <div ref="editor" v-if="resule" autocorrect="off" autocomplete="off" @keydown="btnKeypress" spellcheck="false" @mousedown="mousedown" contenteditable="true" v-html="innerText" @input="changeText" @focus="isChange = false" @blur="blurFunc" class="h-all editors autoy flex-1 outline pp10 w-all wrap"></div>
-    <div v-show="isImage" ref="imgoff" @click.stop="isImage=false" style="border:dashed 2px #409eff;" class="abs">
-      <svg viewBox="0 0 1024 1024" class="abs ar0 ab0 zi-2000" style="cursor:nw-resize" version="1.1" width="15" height="15">
-        <path d="M1024 512v512H512l256-256 256-256z m0-512v256l-384 384-384 384H0l512-512 512-512z" fill="#409eff" p-id="8644"></path>
-      </svg>
-    </div>
-    <svg ref="tabledrag" v-show="isTable" viewBox="0 0 1024 1024" class="abs zi-2000" style="cursor:nw-resize" version="1.1" width="15" height="15">
-      <path d="M1024 512v512H512l256-256 256-256z m0-512v256l-384 384-384 384H0l512-512 512-512z" fill="#ddd" p-id="8644"></path>
-    </svg>
   </div>
 </template>
 <script lang='ts'>
 import { Vue, Model, Prop, Watch } from 'vue-property-decorator';
 export default class App extends Vue {
+  // 内容
   @Model('modelValue', { type: String, default: "<p></p>" }) value!: string;
+  // 排除图标项
   @Prop({ type: [Array], default: [] }) exclude;
+  // 文件上传事件
   @Prop({ type: Function }) upFile;
   $refs
   innerText = "";
@@ -117,18 +112,18 @@ export default class App extends Vue {
   isTable = false;
   linkText = ''
   icons = [
-    { size: 13, select: false, name: 'header', icon: 'M961.142857 950.857143q-25.142857 0-75.714286-2t-76.285714-2q-25.142857 0-75.428571 2t-75.428571 2q-13.714286 0-21.142857-11.714286t-7.428571-26q0-17.714286 9.714286-26.285714t22.285714-9.714286 29.142857-4 25.714286-8.571429q18.857143-12 18.857143-80l-0.571429-223.428571q0-12-0.571429-17.714286-7.428571-2.285714-28.571429-2.285714l-385.714286 0q-21.714286 0-29.142857 2.285714-0.571429 5.714286-0.571429 17.714286l-0.571429 212q0 81.142857 21.142857 93.714286 9.142857 5.714286 27.428571 7.428571t32.571429 2 25.714286 8.571429 11.428571 26q0 14.857143-7.142857 27.428571t-20.857143 12.571429q-26.857143 0-79.714286-2t-79.142857-2q-24.571429 0-73.142857 2t-72.571429 2q-13.142857 0-20.285714-12t-7.142857-25.714286q0-17.142857 8.857143-25.714286t20.571429-10 27.142857-4.285714 24-8.571429q18.857143-13.142857 18.857143-81.714286l-0.571429-32.571429 0-464.571429q0-1.714286 2.857143-14.857143t0-20.857143-0.857143-22-2-24-3.714286-20.857143-6.285714-18-9.142857-10.285714q-8.571429-5.714286-25.714286-6.857143t-30.285714-1.142857-23.428571-8-10.285714-25.714286q0-14.857143 6.857143-27.428571t20.571429-12.571429q26.285714 0 79.142857 2t79.142857 2q24 0 72.285714-2t72.285714-2q14.285714 0 21.428571 12.571429t7.142857 27.428571q0 17.142857-9.714286 24.857143t-22 8.285714-28.285714 2.285714-24.571429 7.428571q-20 12-20 91.428571l0.571429 182.857143q0 12 0.571429 18.285714 7.428571 1.714286 22.285714 1.714286l399.428571 0q14.285714 0 21.714286-1.714286 0.571429-6.285714 0.571429-18.285714l0.571429-182.857143q0-79.428571-20-91.428571-10.285714-6.285714-33.428571-7.142857t-37.714286-7.428571-14.571429-28.285714q0-14.857143 7.142857-27.428571t21.428571-12.571429q25.142857 0 75.428571 2t75.428571 2q24.571429 0 73.714286-2t73.714286-2q14.285714 0 21.428571 12.571429t7.142857 27.428571q0 17.142857-10 25.142857t-22.857143 8.285714-29.428571 1.714286-25.142857 7.142857q-20 13.142857-20 92l0.571429 538.857143q0 68 19.428571 80 9.142857 5.714286 26.285714 7.714286t30.571429 2.571429 23.714286 8.857143 10.285714 25.428571q0 14.857143-6.857143 27.428571t-20.571429 12.571429z', type: 'header', title: '标题' },
-    { size: 18, name: 'fs', icon: 'M296.152 587.982l89.392-288.243 89.61 288.243H296.151m169.934-398.82h-136.23l-203.84 645.676h94.45l48.225-153.667h236.155l49.014 153.667h118.296L466.086 189.16m214.128 496.062l51.859-137.725 51.88 137.725h-103.74m98.502-201.847h-78.918L636.415 654.41l27.467 86.184 0.395-1.244h136.826l28.466 88.906h68.412L778.715 483.376', type: 'fs', title: '字体大小' },
+    // { size: 13, select: false, name: 'header', icon: 'M961.142857 950.857143q-25.142857 0-75.714286-2t-76.285714-2q-25.142857 0-75.428571 2t-75.428571 2q-13.714286 0-21.142857-11.714286t-7.428571-26q0-17.714286 9.714286-26.285714t22.285714-9.714286 29.142857-4 25.714286-8.571429q18.857143-12 18.857143-80l-0.571429-223.428571q0-12-0.571429-17.714286-7.428571-2.285714-28.571429-2.285714l-385.714286 0q-21.714286 0-29.142857 2.285714-0.571429 5.714286-0.571429 17.714286l-0.571429 212q0 81.142857 21.142857 93.714286 9.142857 5.714286 27.428571 7.428571t32.571429 2 25.714286 8.571429 11.428571 26q0 14.857143-7.142857 27.428571t-20.857143 12.571429q-26.857143 0-79.714286-2t-79.142857-2q-24.571429 0-73.142857 2t-72.571429 2q-13.142857 0-20.285714-12t-7.142857-25.714286q0-17.142857 8.857143-25.714286t20.571429-10 27.142857-4.285714 24-8.571429q18.857143-13.142857 18.857143-81.714286l-0.571429-32.571429 0-464.571429q0-1.714286 2.857143-14.857143t0-20.857143-0.857143-22-2-24-3.714286-20.857143-6.285714-18-9.142857-10.285714q-8.571429-5.714286-25.714286-6.857143t-30.285714-1.142857-23.428571-8-10.285714-25.714286q0-14.857143 6.857143-27.428571t20.571429-12.571429q26.285714 0 79.142857 2t79.142857 2q24 0 72.285714-2t72.285714-2q14.285714 0 21.428571 12.571429t7.142857 27.428571q0 17.142857-9.714286 24.857143t-22 8.285714-28.285714 2.285714-24.571429 7.428571q-20 12-20 91.428571l0.571429 182.857143q0 12 0.571429 18.285714 7.428571 1.714286 22.285714 1.714286l399.428571 0q14.285714 0 21.714286-1.714286 0.571429-6.285714 0.571429-18.285714l0.571429-182.857143q0-79.428571-20-91.428571-10.285714-6.285714-33.428571-7.142857t-37.714286-7.428571-14.571429-28.285714q0-14.857143 7.142857-27.428571t21.428571-12.571429q25.142857 0 75.428571 2t75.428571 2q24.571429 0 73.714286-2t73.714286-2q14.285714 0 21.428571 12.571429t7.142857 27.428571q0 17.142857-10 25.142857t-22.857143 8.285714-29.428571 1.714286-25.142857 7.142857q-20 13.142857-20 92l0.571429 538.857143q0 68 19.428571 80 9.142857 5.714286 26.285714 7.714286t30.571429 2.571429 23.714286 8.857143 10.285714 25.428571q0 14.857143-6.857143 27.428571t-20.571429 12.571429z', type: 'header', title: '标题' },
     { size: 22, name: 'image', icon: 'M811.272038 156.318208l-595.873246 0c-46.818305 0-85.124749 38.306444-85.124749 85.124749l0 535.616884c0 46.818305 38.306444 85.124749 85.124749 85.124749l595.873246 0c46.818305 0 85.124749-38.306444 85.124749-85.124749l0-535.616884C896.396787 194.624652 858.090343 156.318208 811.272038 156.318208zM318.595129 255.961626c42.952254 0 77.771271 34.819017 77.771271 77.771271s-34.819017 77.771271-77.771271 77.771271-77.771271-34.819017-77.771271-77.771271S275.642874 255.961626 318.595129 255.961626zM215.398792 734.497467l148.9678-197.609637 106.405425 127.687124 148.968823-191.530175 191.530175 261.45371L215.398792 734.49849z', type: '', title: '上传图片' },
     { size: 17, name: 'table', icon: 'M959.825022 384.002258V191.939717C959.825022 121.2479 902.517291 63.940169 831.825474 63.940169H191.939717C121.2479 63.940169 63.940169 121.2479 63.940169 191.939717v639.885757C63.940169 902.517291 121.2479 959.825022 191.939717 959.825022h639.885757c70.691817 0 127.999548-57.307731 127.999548-127.999548V384.002258zM146.66502 146.66502a63.737872 63.737872 0 0 1 45.336109-18.784682h639.997742A63.961844 63.961844 0 0 1 895.884854 192.001129V320.062089H127.880338V192.001129A63.737872 63.737872 0 0 1 146.66502 146.66502z m269.1267 461.308451v-223.971213h192.181751v223.971213h-192.181751z m192.181751 63.940169v223.971214h-192.181751v-223.971214h192.181751z m-256.12192-63.940169H127.880338v-223.971213h223.971213v223.971213z m-205.186531 269.235073a63.466939 63.466939 0 0 1-18.784682-45.209673V671.91364h223.971213v223.971214H192.001129a63.625887 63.625887 0 0 1-45.336109-18.67631z m749.219834-45.209673A63.763159 63.763159 0 0 1 831.998871 895.884854H671.91364v-223.971214h223.971214v160.085231z m0-224.0254h-223.971214v-223.971213h223.971214v223.971213z', type: '', title: '插入表格' },
+    { size: 13, name: 'fc', icon: 'M648.272501 0H384.768171L0.000682 1024h242.952698l77.34577-255.829447h382.038641l78.710193 255.829447h244.317122zM369.418404 599.408394l120.069287-336.330446a367.541639 367.541639 0 0 0 18.334444-86.55563h6.139906a380.759494 380.759494 0 0 0 16.287808 89.284477l119.387076 333.686876H369.418404z', type: '', title: '字体颜色' },
+    { size: 13, name: 'bc', icon: 'M896 384c-46.72-46.72-160.64-25.6-219.52-10.24L448.64 152.96l-21.76 21.76L313.6 65.28 223.36 152.96 336.64 262.4 66.56 524.16v2.56L448.64 896l359.68-349.44L960 693.12S960 448 896 384zM194.56 524.16l255.36-247.68 254.72 247.68H194.56z', type: '', title: '背景色' },
+    { size: 18, name: 'fs', icon: 'M296.152 587.982l89.392-288.243 89.61 288.243H296.151m169.934-398.82h-136.23l-203.84 645.676h94.45l48.225-153.667h236.155l49.014 153.667h118.296L466.086 189.16m214.128 496.062l51.859-137.725 51.88 137.725h-103.74m98.502-201.847h-78.918L636.415 654.41l27.467 86.184 0.395-1.244h136.826l28.466 88.906h68.412L778.715 483.376', type: 'fs', title: '字体大小' },
     { size: 13, name: 'link', icon: 'M521.6 361.6c-8-14.4-9.6-32-8-48 3.2-16 9.6-30.4 22.4-41.6l1.6-1.6L704 102.4l1.6-1.6c16-14.4 35.2-20.8 54.4-20.8 19.2 0 40 8 54.4 22.4l107.2 107.2 1.6 1.6c14.4 14.4 20.8 33.6 20.8 52.8 0 20.8-8 40-22.4 54.4L752 488c-11.2 11.2-27.2 19.2-43.2 22.4-16 1.6-33.6 0-48-8-19.2-9.6-43.2-1.6-52.8 17.6-9.6 19.2-1.6 43.2 17.6 52.8 28.8 14.4 62.4 20.8 94.4 14.4 32-4.8 62.4-19.2 86.4-43.2L976 377.6l1.6-3.2C1008 344 1024 304 1024 264c0-38.4-14.4-78.4-43.2-107.2l-1.6-1.6L872 48c-32-32-72-48-112-48-38.4 0-78.4 14.4-108.8 43.2l-1.6 1.6-168 169.6-1.6 1.6c-24 24-38.4 54.4-44.8 84.8-4.8 32 0 65.6 14.4 96 9.6 19.2 33.6 27.2 52.8 17.6 20.8-9.6 28.8-33.6 19.2-52.8z m129.6-44.8l-334.4 336c-16 14.4-16 40 0 54.4 14.4 16 40 16 54.4 0l334.4-334.4c16-14.4 16-40 0-56-14.4-16-38.4-16-54.4 0z m0-272l52.8 1.6c-14.4-14.4-36.8-16-52.8-1.6z m328 112l-1.6 52.8c14.4-14.4 16-38.4 1.6-52.8zM502.4 662.4c8 14.4 9.6 32 8 48-3.2 16-9.6 30.4-22.4 41.6l-1.6 1.6-168 168-1.6 1.6c-14.4 14.4-33.6 20.8-52.8 20.8-19.2 0-40-8-54.4-22.4l-107.2-107.2-1.6-1.6c-14.4-14.4-20.8-33.6-20.8-52.8 0-19.2 8-40 22.4-54.4l1.6-1.6L272 534.4c11.2-11.2 27.2-19.2 41.6-20.8 16-3.2 33.6 0 48 8 19.2 9.6 43.2 1.6 52.8-17.6 9.6-19.2 1.6-43.2-17.6-52.8-30.4-16-64-19.2-94.4-14.4-32 4.8-62.4 19.2-86.4 43.2L48 648l-1.6 1.6C16 680 1.6 720 1.6 760c0 38.4 14.4 78.4 43.2 108.8l1.6 1.6 107.2 107.2C184 1008 224 1024 264 1024c38.4 0 78.4-14.4 108.8-43.2l1.6-3.2 168-168 1.6-1.6c24-24 38.4-54.4 43.2-84.8 4.8-32 0-65.6-14.4-96-9.6-19.2-33.6-27.2-52.8-17.6-19.2 9.6-27.2 33.6-17.6 52.8z m-129.6 318.4l-52.8-3.2c14.4 14.4 36.8 16 52.8 3.2zM44.8 867.2l1.6-52.8c-14.4 14.4-14.4 38.4-1.6 52.8z', type: '', title: '链接' },
     { size: 13, name: 'bold', icon: 'M385.692278 918.576916 390.80771 919.307658C421.012953 920.769221 443.423035 921.499963 458.03843 921.499963 545.73119 921.499963 609.551045 905.545019 649.499963 873.63458 689.448881 841.724219 709.423104 790.449073 709.423104 719.807724 709.423104 655.986846 690.66689 608.365568 653.153831 576.942316 615.640852 545.519065 559.372209 529.807675 484.346171 529.807675 462.422961 529.807675 444.153935 530.051308 429.538462 530.538496 414.922988 531.025605 400.307751 531.756426 385.692278 532.730801L385.692278 918.576916ZM386.423099 445.769255C390.320522 446.256443 395.192241 446.621775 401.038494 446.865408 406.884667 447.108962 415.410176 447.23074 426.615414 447.23074 504.5645 447.23074 561.929295 431.51935 598.711532 400.096177 635.49377 368.672926 653.884652 319.590085 653.884652 252.846159 653.884652 194.384345 636.833477 151.025822 602.730732 122.76925 568.628066 94.512679 516.256768 80.38463 445.615419 80.38463 433.922993 80.38463 415.410412 81.358927 390.076889 83.307678L385.692278 83.307678 386.423099 445.769255ZM78.769231 0 528.192276 0C638.295434 0 721.115136 19.608812 776.653824 58.82691 832.192591 98.045086 859.961502 156.62781 859.961502 234.576896 859.961502 293.525898 841.936108 342.852372 805.884613 382.557657 769.833118 422.26302 716.731156 451.371717 646.576916 469.884613 732.320926 471.346176 799.063828 493.268992 846.80767 535.653849 894.551513 578.038705 918.423079 636.499653 918.423079 711.038425 918.423079 805.551734 886.026004 878.018954 821.23075 928.442289 756.435574 978.865625 663.141612 1004.076898 541.346186 1004.076898L78.769231 1004.076898 78.769231 931.000005 167.19234 922.961526 191.307697 899.576911 191.307697 101.57694 167.19234 80.38463 78.769231 73.076894 78.769231 0Z', type: 'cmd', title: '加粗' },
     { size: 13, name: 'italic', icon: 'M682.666667 85.333333L512 938.666667h170.666667v85.333333H170.666667v-85.333333h170.666666L512 85.333333H341.333333V0h512v85.333333H682.666667z', type: 'cmd', title: '斜体' },
     { size: 13, name: 'underline', icon: 'M0 945.230769 945.230769 945.230769 945.230769 1024 0 1024 0 945.230769ZM0 0 407.076943 0 407.076943 61.934356 319.153861 68.127823 299.076923 86.088783 299.076923 530.158041C299.076923 614.802038 317.076716 675.290663 353.076933 711.625649 389.077071 747.960635 448.153442 766.127892 530.307702 766.127892 606.000364 766.127892 660.807522 746.825177 694.730752 708.219274 728.653982 669.613371 745.61536 606.337733 745.61536 518.390469L745.61536 91.043525 724.153817 69.366469 633.461524 61.934356 633.461524 0 955.384596 0 955.384596 61.934356 868.846119 69.366469 849.461563 91.043525 849.461563 531.396687C849.461563 649.072561 819.923338 734.334661 760.846178 787.185585 701.76894 840.03651 606.462188 866.461538 474.923087 866.461538 406.153531 866.461538 345.807951 857.481137 293.884613 839.520098 241.961275 821.55906 201.230887 795.856581 171.692347 762.411796 149.076834 735.986373 133.038474 705.74206 123.57695 671.677991 114.115348 637.613922 109.384625 588.789524 109.384625 525.203298L109.384625 86.088783 89.307687 68.127823 0 61.934356 0 0Z', type: 'cmd', title: '下划线' },
     { size: 13, name: 'quote', icon: 'M872.369231 128c-177.230769 0-313.107692 137.846154-313.107693 315.076923V866.461538c0 15.753846 13.784615 29.538462 29.538462 29.538462h334.769231c15.753846 0 29.538462-13.784615 29.538461-29.538462V531.692308c0-15.753846-13.784615-29.538462-29.538461-29.538462H677.415385v-59.076923c0-98.461538 96.492308-196.923077 194.953846-196.923077h51.2c15.753846 0 29.538462-13.784615 29.538461-29.538461V157.538462c0-15.753846-13.784615-29.538462-29.538461-29.538462h-51.2z m-488.369231 0c-177.230769 0-313.107692 137.846154-313.107692 315.076923V866.461538c0 15.753846 13.784615 29.538462 29.538461 29.538462h334.769231c15.753846 0 29.538462-13.784615 29.538462-29.538462V531.692308c0-15.753846-13.784615-29.538462-29.538462-29.538462H189.046154v-59.076923c0-98.461538 96.492308-196.923077 194.953846-196.923077h51.2c15.753846 0 29.538462-13.784615 29.538462-29.538461V157.538462c0-15.753846-13.784615-29.538462-29.538462-29.538462h-51.2z', type: 'quote', title: '引用' },
     { size: 13, name: 'strikethrough', icon: 'M965.612 470.938H722.089c-13.491-12.97-27.55-24.28-42.189-33.9-23.926-15.693-57.6-33.377-101.023-53.038-43.433-19.656-72.192-33.014-86.277-40.054-43.136-20.833-64.706-53.852-64.706-99.046 0-25.528 8.069-48.64 24.212-69.33 16.138-20.69 38-33.08 65.593-37.197 14.668-2.345 25.528-3.522 32.568-3.522 44.902 0 83.338 15.114 115.328 45.337 24.94 20.839 44.749 48.348 59.428 82.535 14.669 34.19 22.005 55.982 22.005 65.367h26.855l-12.77-259.712h-23.331c0 13.501-2.35 24.212-7.04 32.133-6.754 8.514-13.942 12.764-21.57 12.764-6.462 0-13.8-2.345-22.012-7.045-36.684-19.656-68.229-32.42-94.638-38.293-26.409-5.867-62.658-8.806-108.723-8.806-63.683 0.88-117.463 20.03-161.331 57.446-43.873 37.417-68.89 93.978-75.05 169.698 0 74.245 19.513 130.227 58.543 167.93 5.919 5.72 12.2 11.285 18.775 16.727H64.486v72.561h386.125c4.972 2.033 10 4.045 15.135 6.011 52.234 19.082 90.824 43.873 115.768 74.388 24.94 30.526 37.417 76.155 37.417 136.899-4.992 37.269-20.91 65.813-47.76 85.617-26.848 19.809-57.88 29.716-93.096 29.716-40.791 0-74.988-12.032-102.564-36.096-33.167-27.878-57.078-61.256-71.752-100.147-14.679-38.881-22.01-65.654-22.01-80.333h-21.566l-11.003 277.76h27.29c0-15.55 5.284-27.581 15.846-36.096 5.868-3.522 11.884-5.284 18.048-5.284 5.868 0 13.788 2.356 23.772 7.045 49.004 32.87 117.53 50.325 205.568 52.383 39.02 0 71.45-3.676 97.28-11.003 35.216-9.687 65.51-28.175 90.9-55.465 25.38-27.29 44.524-59.494 57.442-96.62 12.908-37.12 19.369-75.934 19.369-116.428 0-50.918-9.2-95.027-27.571-132.347h188.488v-72.555z', type: 'cmd', title: '删除线' },
-    { size: 13, name: 'fc', icon: 'M648.272501 0H384.768171L0.000682 1024h242.952698l77.34577-255.829447h382.038641l78.710193 255.829447h244.317122zM369.418404 599.408394l120.069287-336.330446a367.541639 367.541639 0 0 0 18.334444-86.55563h6.139906a380.759494 380.759494 0 0 0 16.287808 89.284477l119.387076 333.686876H369.418404z', type: '', title: '字体颜色' },
-    { size: 13, name: 'bc', icon: 'M896 384c-46.72-46.72-160.64-25.6-219.52-10.24L448.64 152.96l-21.76 21.76L313.6 65.28 223.36 152.96 336.64 262.4 66.56 524.16v2.56L448.64 896l359.68-349.44L960 693.12S960 448 896 384zM194.56 524.16l255.36-247.68 254.72 247.68H194.56z', type: '', title: '背景色' },
     // { size: 13, name: 'unlink', icon: 'M308.35 939.41c-60 0-116.23-23.21-158.39-65.37s-65.37-98.41-65.37-158.39S107.8 599.41 150 557.25l135.73-135.76A32 32 0 0 1 331 466.75L195.22 602.51a160 160 0 0 0 226.27 226.27L557.25 693a32 32 0 0 1 45.26 45.25L466.74 874c-42.15 42.2-98.4 65.41-158.39 65.41zM672 896a32 32 0 0 1-32-32v-64a32 32 0 0 1 64 0v64a32 32 0 0 1-32 32z m128-64a31.9 31.9 0 0 1-22.63-9.37l-64-64a32 32 0 0 1 45.26-45.26l64 64A32 32 0 0 1 800 832z m64-128h-64a32 32 0 0 1 0-64h64a32 32 0 0 1 0 64z m-148.35-92.12A32 32 0 0 1 693 557.26l135.78-135.77a160 160 0 0 0-226.27-226.27L466.75 331a32 32 0 0 1-45.26-45.25L557.26 150c42.15-42.16 98.4-65.37 158.39-65.37S831.88 107.8 874 150s65.37 98.41 65.37 158.39S916.2 424.59 874 466.75L738.27 602.51a31.86 31.86 0 0 1-22.62 9.37zM224 384h-64a32 32 0 0 1 0-64h64a32 32 0 0 1 0 64z m64-64a31.9 31.9 0 0 1-22.63-9.37l-64-64a32 32 0 0 1 45.26-45.26l64 64A32 32 0 0 1 288 320z m64-64a32 32 0 0 1-32-32v-64a32 32 0 0 1 64 0v64a32 32 0 0 1-32 32z', type: 'cmd', title: '取消链接' },
     { size: 13, name: 'justifyLeft', icon: 'M0 0h1228.8v204.8H0V0z m0 409.6h1228.8v204.8H0V409.6z m0 409.6h614.4v204.8H0V819.2z', type: 'cmd', title: '居左' },
     { size: 13, name: 'justifyCenter', icon: 'M307.2 0h614.4v204.8H307.2V0zM0 409.6h1228.8v204.8H0V409.6z m307.2 409.6h614.4v204.8H307.2V819.2z', type: 'cmd', title: '居中' },
@@ -235,79 +230,150 @@ export default class App extends Vue {
 
   setTableDrag() {
     this.$nextTick(() => {
-      this.$refs.editor.querySelectorAll('table').forEach(item => {
-        item.onmousemove = e => {
-          let { clientWidth, clientHeight, offsetHeight, offsetWidth } = item;
-          let { left, top } = this.getoff(item);
-          this.isTable = true;
-          this.$refs.tabledrag.style.left = `${clientWidth + left - 15}px`;
-          this.$refs.tabledrag.style.top = `${clientHeight + top - 15}px`;
-          let disX = 0;//鼠标按下时光标的X值
-          let disW = 0; //拖拽前div的宽
-          this.$refs.tabledrag.onmousedown = e => {
-            let ev = e || window.event;
-            disX = ev.clientX; // 获取鼠标按下时光标x的值
-            disW = clientWidth; // 获取拖拽前div的宽
-            document.onmousemove = (e) => {
-              let ev = e || window.event;
-              let W = ev.clientX - disX + disW;
-              this.$refs.imgoff.style.left = W + 1 + 'px';// 拖拽后物体的宽
-              this.$refs.imgoff.style.top = item.clientHeight + 'px';// 拖拽后物体的高
-              item.style.width = W + 'px';
-            }
-            document.onmouseup = () => {
-              document.onmousemove = null;
-              document.onmouseup = null;
-              this.isImage = false;
-            }
+      this.$refs.editor.querySelectorAll('table').forEach(table => {
+        table.onmousemove = e => {
+          if (!table.className.includes('hoverTable')) {
+            table.className = table.className + ' hoverTable';
           }
         }
+        table.onmouseout = e => {
+          table.className = table.className.replace(/\shoverTable/g, '')
+        }
+        // 取最后一个td
+        let lastTd = table.querySelectorAll('td')[table.querySelectorAll('td').length - 1];
+        // 拖动table长宽事件
+        lastTd.onmousemove = e => {
+          if ((event.offsetX > lastTd.offsetWidth - 15) && (event.offsetY > lastTd.offsetHeight - 15)) {
+            lastTd.style.cursor = "nw-resize";
+            let disX = 0;//鼠标按下时光标的X值
+            let disW = 0;
+            let diyY = 0;
+            let { clientWidth, clientHeight, offsetHeight, offsetWidth } = table;
+            lastTd.onmousedown = lv => {
+              let ev = e || window.event;
+              disX = ev.clientX; // 获取鼠标按下时光标x的值
+              diyY = ev.clientY;
+              document.onmousemove = (e) => {
+                let ev = e || window.event;
+                let W = ev.clientX - disX + clientWidth;
+                let H = ev.clientY - diyY + clientHeight;
+                table.style.width = W + 'px';
+                table.style.height = H + 'px';
+              }
+              document.onmouseup = () => {
+                document.onmousemove = null;
+                document.onmouseup = null;
+              }
+            }
+          } else {
+            lastTd.style.cursor = "default";
+            lastTd.onmousedown = null;
+          }
+        }
+
+       
       })
     })
   }
 
   setImgDrag() {
     this.$nextTick(() => {
-      this.$refs.editor.querySelectorAll('img').forEach(item => {
-        item.onclick = e => {
-          let { clientWidth, clientHeight } = item;
-          let { left, top } = this.getoff(item);
-          this.isImage = false;
-          this.$nextTick(() => {
-            this.isImage = true;
-            let sctop = this.$refs.editor.scrollTop;
-            let oDrag = this.$refs.imgoff.querySelector('svg');
-            this.$refs.imgoff.style.width = clientWidth + 2 + 'px';
-            this.$refs.imgoff.style.height = clientHeight + 2 + 'px';
-            this.$refs.imgoff.style.left = left - 1 + 'px';
-            this.$refs.imgoff.style.top = top - sctop - 1 + 'px';
+      this.$refs.editor.querySelectorAll('img').forEach(images => {
+        images.onclick = e => {
 
-            let disX = 0;//鼠标按下时光标的X值
-            let disW = 0; //拖拽前div的宽
-            oDrag.onmousedown = e => {
-              let ev = e || window.event;
-              disX = ev.clientX; // 获取鼠标按下时光标x的值
-              disW = clientWidth; // 获取拖拽前div的宽
-              document.onmousemove = (e) => {
-                let sctop = this.$refs.editor.scrollTop;
-                let ev = e || window.event;
-                let W = ev.clientX - disX + disW;
-                this.$refs.imgoff.style.width = W + 2 + 'px';// 拖拽后物体的宽
-                this.$refs.imgoff.style.height = item.clientHeight + 2 + 'px';// 拖拽后物体的高
-                this.$refs.imgoff.style.top = top - sctop - 1 + 'px';
-                item.style.width = W + 'px';
-              }
-              document.onmouseup = () => {
-                document.onmousemove = null;
-                document.onmouseup = null;
-                this.isImage = false;
+          // 是否开启尺寸修改
+          let resizeable = false
+          // 鼠标按下时的坐标，并在修改尺寸时保存上一个鼠标的位置
+          let clientX, clientY
+          // div可修改的最小宽高
+          let minW = 8, minH = 8
+          // 鼠标按下时的位置，使用n、s、w、e表示
+          let direc = ''
+          if (!images.className.includes('hoverImage')) {
+            this.$refs.editor.blur();
+            this.$refs.editor.ondragstart = e => { return false }
+            this.$refs.editor.onselectstart = e => { return false }
+            images.focus();
+            images.className = images.className + ' hoverImage';
+            document.onmousemove = e => {
+              let d = this.getDirection(e, images)
+              let cursor
+              if (d === '') cursor = 'default';
+              else cursor = d + '-resize';
+              // 修改鼠标显示效果
+              images.style.cursor = cursor;
+              // 当开启尺寸修改时，鼠标移动会修改div尺寸
+              if (resizeable) {
+                // 鼠标按下的位置在右边，修改宽度
+                if (direc.indexOf('e') !== -1) {
+                  images.style.width = Math.max(minW, images.offsetWidth + (e.clientX - clientX)) + 'px'
+                  clientX = e.clientX
+                }
+
+                // 鼠标按下的位置在上部，修改高度
+                if (direc.indexOf('n') !== -1) {
+                  images.style.height = Math.max(minH, images.offsetHeight + (clientY - e.clientY)) + 'px'
+                  clientY = e.clientY
+                }
+                // 鼠标按下的位置在底部，修改高度
+                if (direc.indexOf('s') !== -1) {
+                  images.style.height = Math.max(minH, images.offsetHeight + (e.clientY - clientY)) + 'px'
+                  clientY = e.clientY
+                }
+
+                // 鼠标按下的位置在左边，修改宽度
+                if (direc.indexOf('w') !== -1) {
+                  images.style.width = Math.max(minW, images.offsetWidth + (clientX - e.clientX)) + 'px'
+                  clientX = e.clientX
+                }
               }
             }
-
-          })
+            document.onmouseup = e => {
+              // images.className = images.className.replace(/\shoverImage/g, '');
+              if (images) {
+                images.style.cursor = "default";
+                // images.className = images.className.replace(/\shoverImage/g, '');
+              }
+              document.onmousemove = null;
+              resizeable = false;
+              this.$refs.editor.ondragstart = () => { return true }
+              this.$refs.editor.onselectstart = () => { return true }
+            }
+            images.onmousedown = e => {
+              let d = this.getDirection(e, images)
+              // 当位置为四个边和四个角时才开启尺寸修改
+              if (d !== '') {
+                resizeable = true
+                direc = d
+                clientX = e.clientX
+                clientY = e.clientY
+              }
+            }
+          } else {
+            images.className = images.className.replace(/\shoverImage/g, '');
+            images.style.cursor = "default";
+            document.onmousemove = null;
+            this.$refs.editor.focus();
+            this.$refs.editor.ondragstart = null
+            this.$refs.editor.onselectstart = null
+          }
         }
       })
     })
+  }
+  // 获取鼠标所在对像的位置
+  getDirection(ev, c) {
+    let xP, yP, offset, dir;
+    dir = '';
+    xP = ev.offsetX;
+    yP = ev.offsetY;
+    offset = 10;
+
+    if (yP < offset) dir += 'n';
+    else if (yP > c.offsetHeight - offset) dir += 's';
+    if (xP < offset) dir += 'w';
+    else if (xP > c.offsetWidth - offset) dir += 'e';
+    return dir;
   }
 
   upfileImage(type) {
@@ -404,6 +470,7 @@ export default class App extends Vue {
   changeText(e) {
     // this.$emit('input', e.srcElement.innerHTML)
     this.$emit('update:modelValue', e.srcElement.innerHTML);
+
   }
   btnCommand(cmd, html: any = "") {
     html = html ? html : false;
@@ -511,4 +578,43 @@ export default class App extends Vue {
 </script>
 
 <style lang='less'>
+.hoverTable {
+  border: 2px dashed #00afee !important;
+  position: relative;
+  z-index: 10;
+  tr:last-child td:last-child {
+    position: relative;
+    // cursor: nw-resize;
+    &:after {
+      display: inline-block;
+      position: absolute;
+      bottom: -1px;
+      right: -1px;
+      content: " ";
+      width: 0;
+      height: 0;
+      border-width: 15px 15px 0 0;
+      border-style: solid;
+      border-color: transparent #00afee transparent transparent;
+    }
+  }
+}
+.hoverImage {
+  border: 3px dashed #00afee !important;
+  position: relative;
+  z-index: 10;
+  &:after {
+    z-index: 50;
+    display: inline-block;
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    content: " ";
+    width: 0;
+    height: 0;
+    border-width: 15px 15px 0 0;
+    border-style: solid;
+    border-color: transparent #00afee transparent transparent;
+  }
+}
 </style>

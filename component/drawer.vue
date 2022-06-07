@@ -17,12 +17,16 @@
 import { Vue, Prop, Model } from 'vue-property-decorator';
 export default class App extends Vue {
   @Prop({ type: String, default: "标题" }) title;
-  @Prop({ type: Boolean, default: true }) closable;
+  // 遮罩 开启，关闭
   @Prop({ type: Boolean, default: true }) mask;
+  // 内容高度撑到div容器最高后 是否 显示滚动条
   @Prop({ type: Boolean, default: true }) auto;
+  // 关闭事件
   @Prop({ type: Boolean, default: true }) maskClosable;
   @Prop({ type: String, default: "400px" }) width;
+  // 某个元素内部显示
   @Prop({ type: Boolean, default: false }) inner;
+  // 显示与关闭
   @Model('modelValue', { type: Boolean, default: false }) value!: boolean
 
   get maskClass() {

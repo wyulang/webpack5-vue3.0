@@ -14,7 +14,7 @@
 
 <script lang='ts'>
 import { Vue, Prop, Emit, Model } from 'vue-property-decorator';
-import { isString, isArray, isObject } from '@lib/lang';
+import { isString, isArray, isObject } from '../../lib/lang';
 export default class checkbox extends Vue {
   // 数组[{ label: "是", value: "1" }, { label: "否", value: "2" }] 返回value=[1,2] 详情看get path
   // <checkboxs v-model="value" :data='[{ label: "是", value: "1" }, { label: "否", value: "2" }]'></checkboxs> value=[1,2]

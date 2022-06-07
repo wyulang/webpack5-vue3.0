@@ -20,7 +20,7 @@
 
 <script lang='ts'>
 import { Vue, Prop, Model, Emit, Options } from 'vue-property-decorator';
-import { isString, isArray, isObject } from '@lib/lang';
+import { isString, isArray, isObject } from '../../lib/lang';
 import scrollbar from './scroll.vue';
 @Options({
   components: {
@@ -30,9 +30,13 @@ import scrollbar from './scroll.vue';
 export default class App extends Vue {
   @Prop({ default: '标题', type: String }) title;
   @Prop({ type: String, default: "" }) class;
+  // 数组 label,value 如name,id 或 {label:'name',value:'id'}
   @Prop({ type: [String, Object, Array], default: "" }) props;
+  // 选中值
   @Model('modelValue', { type: [String, Number, Boolean], default: "" }) value;
+  // 数据list
   @Prop({ type: Array, default: [] }) data!: any;
+  // 禁止选项 [1,2,'name']
   @Prop({ type: Array }) disList;
   visible = false;
   upSelect() {

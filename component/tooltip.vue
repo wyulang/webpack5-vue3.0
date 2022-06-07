@@ -49,7 +49,7 @@ export default class App extends Vue {
       'background-color': this.bcolor,
       'color': this.fcolor,
       'max-width': maxWidth,
-      'z-index':2222,
+      'z-index': 2222,
       ...position
     }
   }
@@ -110,6 +110,7 @@ export default class App extends Vue {
 
   mounted() {
     this.init();
+    
   }
 
   updated() {
