@@ -22,8 +22,8 @@
             </svg>
           </div>
           <div class="flex-1 flex fs-15 fb ai-c jc-c">
-            <span @click="isYear=!isYear;isMonth=false;" class="pr10 hand">{{selectYear}} 年</span>
-            <span @click="isMonth=!isMonth;isYear=false;" class="pl10 hand">{{selectMonth}} 月</span>
+            <span @click="isYear=!isYear;isMonth=false;isHour = false;isMinute = false;isSec = false;" class="pr10 hand">{{selectYear}} 年</span>
+            <span @click="isMonth=!isMonth;isYear=false;isHour = false;isMinute = false;isSec = false;" class="pl10 hand">{{selectMonth}} 月</span>
           </div>
           <div @click="changeMonth('next')" class="pl5 pr5 hand">
             <svg viewBox="0 0 1024 1024" width="15" height="15">
@@ -111,13 +111,14 @@
 import { Vue, Prop, Model, Emit } from 'vue-property-decorator';
 import formatDate from '@lib/dateFormat';
 export default class datepick extends Vue {
-  $refs;
   // 日期格式化
   @Prop({ type: String, default: "yyyy-MM-dd" }) format;
   // 输入框大小
   @Prop({ type: String, default: "small" }) size;
   // 是否显示 时分秒
   @Prop({ type: Boolean, default: false }) time;
+  // 是否显示 时分秒
+  @Prop({ type: Boolean, default: false }) disabled;
   // 是否有清空图标
   @Prop({ type: Boolean, default: true }) clear;
   @Prop({ type: String, default: "请选择日期" }) placeholder;
@@ -156,6 +157,7 @@ export default class datepick extends Vue {
   off: any = { width: 0, height: 0 }
 
   inputSelect(e) {
+    if (this.disabled) return
     this.visible = !this.visible;
     document.addEventListener("click", this.setSelectPop);
   }
@@ -358,9 +360,12 @@ export default class datepick extends Vue {
       this.selectSecond = years[5];
     }
     if (this.value) {
-      let format = this.format;
-      if (format != "timestamp" && this.time && !format.includes('hh')) {
-        format = format + " hh:mm:ss"
+      let format = "yyyy-MM-dd";
+      // if (format != "timestamp" && this.time && !format.includes('hh')) {
+      //   format = format + " hh:mm:ss"
+      // }
+      if (this.time) {
+        format = "yyyy-MM-dd hh:mm:ss"
       }
       let currtime = formatDate(this.value, format);
       // if (this.isFirst) {

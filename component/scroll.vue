@@ -1,11 +1,11 @@
 <template>
-  <section ref="scroll" :style="sHeight" @mouseleave="visible=false" @mousemove="visible=true" class="scrollbar rel h-all">
-    <main ref="main" @scroll="onScroll" class="h-all scrollbar-contaniner w-all">
+  <section :style="mainStyle" @mouseleave="onOut" @mousemove="onMove" class="h-all __scroll rel w-all">
+    <main ref="main" @scroll="onScroll" class="scrollbar-contaniner h-all w-all">
       <slot></slot>
     </main>
     <transition name="scrollbar-fade">
-      <section ref="instance" v-show="visible" class="scrollbar__bar" @mousedown="clickTrackHandler">
-        <div ref="thumb" class="scrollbar__thumb" :style="thumbStyle" @mousedown="clickThumbHandler"></div>
+      <section ref="instance" v-show="visible" @mousedown="clickTrackHandler" class="abs w-8 ar3 ab2 zi-100 ra-4 at2">
+        <div ref="thumb" :style="thumbStyle" @mousedown="clickThumbHandler" class="rel w-all hand ra-4"></div>
       </section>
     </transition>
   </section>
@@ -16,16 +16,16 @@ import { Vue, Prop, Ref, Emit } from 'vue-property-decorator';
 import { off, on } from '@lib/lang';
 export default class App extends Vue {
   @Prop({ type: [String, Number], default: 0 }) width;
-  @Prop({ type: [String, Number], default: 0 }) maxHeight;
-  @Prop({ type: [String, Number], default: 0 }) height;
+  @Prop({ type: [String, Number], default: "" }) maxHeight;
+  @Prop({ type: [String, Number], default: "" }) height;
   @Prop({ type: [String, Number], default: "" }) auto;
-  mainHeight = 0;
-  bodyHeight = 0;
-  oldHeight = 0;
-  mainWidth = 0;
-  getLevel = 0;
+
   visible = false;
+
+  parentHeight = 0;
+  scrollHeight = 0;
   moveY = 0;
+
   @Ref('instance') instance;
   @Ref('thumb') thumb;
   @Ref('main') main;
@@ -33,112 +33,30 @@ export default class App extends Vue {
   barStore = {};
   onselectstartStore: any = null;
   cursorLeave;
-  // scrollHeight: any = 0;
+
   bar = {
     offset: 'offsetHeight', scroll: 'scrollTop', scrollSize: 'scrollHeight',
     size: 'height', key: 'vertical', axis: 'Y', client: 'clientY', direction: 'top',
   }
 
-  mounted() {
-    this.initHeight();
-  }
-
-  // 最大高度
-  get mheight() {
-    let curr: any = this.maxHeight;
-    if (curr && typeof curr == "string") {
-      curr = curr.replace(/[^\d]/g, '');
-    }
-    return Number(curr)
-  }
-
-  get heights() {
-    let curr: any = this.height;
-    if (curr && typeof curr == "string") {
-      curr = curr.replace(/[^\d]/g, '') || 0;
-    }
-    return curr
-  }
-
-  //当未设height/maxHeight时，取父级高度，直到取到高度为止
-  getPrentHeight(el) {
-    if (el) {
-      if (el.parentNode && el.parentNode.clientHeight) {
-        return el.parentNode.clientHeight
-      } else {
-        this.getPrentHeight(el.parentNode)
-      }
+  onMove(e) {
+    if (this.thumbHeight) {
+      this.visible = true
     } else {
-      return 0
+      this.visible = false;
     }
   }
 
-  initHeight() {
-    let curr = 0;
-    if (this.main) {
-      this.bodyHeight = this.main.firstElementChild && this.main.firstElementChild.scrollHeight;
-      curr = this.main.firstChild.clientHeight || this.getPrentHeight(this.$el)
-    }
-    if (this.mheight) {
-      let child = this.$el.firstElementChild.scrollHeight;
-      if (child < this.mheight) {
-        curr = child;
-      } else {
-        curr = this.mheight;
+  onOut(e) {
+    this.visible = false;
+  }
+
+  scrollTop(top = 1000) {
+    this.$nextTick(() => {
+      if (this.main) {
+        this.main.scrollTop = this.main.scrollHeight + top;
       }
-    }
-    if (this.heights) {
-      curr = this.heights;
-    }
-    this.mainHeight = curr;
-    if (this.auto) {
-      this.moveY = this.moveY = (this.auto * 100) / this.mainHeight;
-      this.wrap.scrollTop = this.auto;
-    }
-
-  }
-
-  updated() {
-    let curr = this.main.firstElementChild.scrollHeight || 0;
-    if (this.bodyHeight && curr != this.bodyHeight) {
-      this.initHeight();
-    }
-  }
-
-  get sHeight() {
-    return `height:${this.mainHeight}px;`
-  }
-
-  @Emit('scroll')
-  changeScroll(value) {
-    return value
-  }
-
-  @Ref('main') wrap;
-  onScroll(e) {
-    if (this.wrap) {
-      this.moveY = (this.wrap.scrollTop * 100) / this.mainHeight;
-      let isBottom = (this.mainHeight + this.wrap.scrollTop) == this.bodyHeight
-      this.changeScroll({
-        scrollTop: this.moveY,
-        isBottom
-      })
-    }
-  }
-
-  get scrollHeight() {
-    let scrollHeight = (this.mainHeight * 100) / this.bodyHeight;
-    return scrollHeight < 100 ? scrollHeight + '%' : '';
-  }
-
-  get thumbStyle() {
-    const style = {} as any
-    let translate = `translateY(${this.moveY}%)`;
-    style.height = this.scrollHeight
-    style.transform = translate
-    style.msTransform = translate
-    style.webkitTransform = translate
-    return style
+    })
   }
 
   clickTrackHandler(e) {
@@ -146,7 +64,7 @@ export default class App extends Vue {
     const thumbHalf = (this.thumb[this.bar.offset] / 2)
     const thumbPositionPercentage = ((offset - thumbHalf) * 100 / this.instance[this.bar.offset])
 
-    this.wrap[this.bar.scroll] = (thumbPositionPercentage * this.wrap[this.bar.scrollSize] / 100)
+    this.main[this.bar.scroll] = (thumbPositionPercentage * this.main[this.bar.scrollSize] / 100)
   }
 
   clickThumbHandler(e) {
@@ -177,7 +95,8 @@ export default class App extends Vue {
     const offset = ((this.instance.getBoundingClientRect()[this.bar.direction] - e[this.bar.client]) * -1)
     const thumbClickPosition = (this.thumb[this.bar.offset] - prevPage)
     const thumbPositionPercentage = ((offset - thumbClickPosition) * 100 / this.instance[this.bar.offset])
-    this.wrap[this.bar.scroll] = (thumbPositionPercentage * this.wrap[this.bar.scrollSize] / 100)
+
+    this.main[this.bar.scroll] = (thumbPositionPercentage * this.main[this.bar.scrollSize] / 100)
   }
 
   mouseUpDocumentHandler() {
@@ -190,11 +109,90 @@ export default class App extends Vue {
     }
   }
 
+  // 滚动条高度
+  get thumbHeight() {
+    let scrollHeight = (this.parentHeight * 100) / this.scrollHeight;
+    return scrollHeight < 100 ? scrollHeight + '%' : '';
+  }
+
+  // 滚动样式
+  get thumbStyle() {
+    let translate = `translateY(${this.moveY}%)`;
+    return {
+      'height': this.thumbHeight,
+      'transform': translate,
+      '-webkit-transform': translate,
+      '-moz-transform': translate,
+      'background-color': 'rgba(144,147,153,0.5)'
+    }
+  }
+
+  get mainStyle() {
+    if (this.height) {
+      return {
+        'height': this.height.toString().replace(/[^\d]/g, '') + 'px !important'
+      }
+    }
+    if (this.maxHeight) {
+      let currHeight = Number(String(this.maxHeight).replace(/[^\d]/g, ''));
+      if (this.parentHeight < currHeight) {
+        return ""
+      }
+      return {
+        'height': currHeight + 'px !important'
+      }
+    }
+    return "";
+  }
+
+  @Emit('scroll')
+  changeScroll(value) {
+    return value
+  }
+
+  onScroll(e) {
+    // const offset = Math.abs(e.target.getBoundingClientRect().top - e.clientY)
+    this.moveY = (e.srcElement.scrollTop * 100) / this.parentHeight;
+    this.changeScroll({
+      scrollTop: this.moveY,
+      // 是否到最底部
+      isBottom: (this.parentHeight + e.srcElement.scrollTop) > (this.scrollHeight - 2),
+      // 是否到最顶部
+      isTop: e.srcElement.scrollTop <= 0
+    })
+  }
+
+  isAutoFirst = false;
+  initScroll() {
+    if (this.auto && !this.isAutoFirst) {
+      this.isAutoFirst = true;
+      this.moveY = this.moveY = (this.auto * 100) / this.parentHeight;
+      this.$refs.main.scrollTop = this.auto;
+    }
+  }
+
+  mounted() {
+    this.parentHeight = this.$el.offsetHeight;
+    this.scrollHeight = this.$refs.main.scrollHeight;
+    this.initScroll();
+  }
+
+  updated() {
+    // 当父级高度发生改变时
+    if (this.parentHeight != this.$el.offsetHeight) {
+      this.parentHeight = this.$el.offsetHeight
+    }
+    this.initScroll();
+    // 当内容高度发生改变时
+    if (this.scrollHeight != this.$refs.main.scrollHeight) {
+      this.scrollHeight = this.$refs.main.scrollHeight
+    }
+  }
 }
 </script>
 
 <style lang='less'>
-.scrollbar {
+.__scroll {
   .scrollbar-contaniner {
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -204,23 +202,7 @@ export default class App extends Vue {
       display: none;
     }
   }
-
-  .scrollbar__bar {
-    position: absolute;
-    right: 2px;
-    bottom: 2px;
-    z-index: 1;
-    border-radius: 4px;
-    width: 7px;
-    top: 2px;
-  }
-
   .scrollbar__thumb {
-    position: relative;
-    width: 100%;
-    cursor: pointer;
-    border-radius: inherit;
-    background-color: rgba(144, 147, 153, 0.5);
     transition: background-color 0.3s;
   }
 

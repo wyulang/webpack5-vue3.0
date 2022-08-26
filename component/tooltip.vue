@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <span class="rel" ref="trigger">
+    <span :class="class" class="rel" ref="trigger">
       <slot></slot>
       <transition name="fade">
         <div @click.stop v-show="visible" :style="tipStyle" style="width:max-content" class="abs pt7 pb7 pl10 pr10 ra-4">
@@ -11,17 +10,19 @@
         </div>
       </transition>
     </span>
-  </div>
 </template>
 
 <script lang='ts'>
 import { Vue, Prop, Ref } from 'vue-property-decorator';
 export default class App extends Vue {
+  @Prop({ type: String, default: "" }) class;
   @Prop({ type: String, default: '#fff' }) fcolor;
   @Prop({ type: String, default: '#303133' }) bcolor;
   @Prop({ type: String, default: 'bottom' }) placement;
   @Prop({ type: String, default: '提示！' }) content;
   @Prop({ type: String, default: '500px' }) maxWidth;
+  // 间距
+  @Prop({ type: [Number, String], default: 0 }) space;
   @Prop({ type: Boolean, default: false }) click;
   @Ref('trigger') trigger;
   visible = false;
@@ -32,16 +33,16 @@ export default class App extends Vue {
     let position = {}
     switch (this.placement) {
       case "bottom":
-        position = { 'top': this.position.heigth + 10 + 'px', 'left': "50%", 'transform': "translateX(-50%)" }
+        position = { 'top': this.position.heigth + 10 + parseInt(this.space) + 'px', 'left': "50%", 'transform': "translateX(-50%)" }
         break;
       case "top":
-        position = { 'bottom': this.position.heigth + 10 + 'px', 'left': "50%", 'transform': "translateX(-50%)" }
+        position = { 'bottom': this.position.heigth + 10 + parseInt(this.space) + 'px', 'left': "50%", 'transform': "translateX(-50%)" }
         break;
       case "left":
-        position = { 'right': this.position.width + 10 + 'px', 'top': "50%", 'transform': "translateY(-50%)" }
+        position = { 'right': this.position.width + 10 + parseInt(this.space) + 'px', 'top': "50%", 'transform': "translateY(-50%)" }
         break;
       case "right":
-        position = { 'left': this.position.width + 10 + 'px', 'top': "50%", 'transform': "translateY(-50%)" }
+        position = { 'left': this.position.width + 10 + parseInt(this.space) + 'px', 'top': "50%", 'transform': "translateY(-50%)" }
         break;
     }
 
@@ -110,7 +111,7 @@ export default class App extends Vue {
 
   mounted() {
     this.init();
-    
+
   }
 
   updated() {

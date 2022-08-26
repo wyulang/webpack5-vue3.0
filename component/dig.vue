@@ -1,31 +1,27 @@
 <template>
-  <transition name="dialog">
-    <section v-if="modelValue" :id="zindex" :style="{'z-index':zindex}" class="_dialog" ref='digBox'>
-      <div v-if="isModel" @click="fullClose&&closeWin()" :style="{'z-index':zindex+1}" class="model"></div>
-      <section :id="'dig'+(zindex+1)" ref='dialog' class="_dialog_body" :style='bodyStyle'>
+  <transition class="DIALOGFAG" name="dialog">
+    <section v-if="value" :id="currIndex" :style="{'z-index':currIndex}" class="fixed at0 al0 ab0 ar0">
+      <section ref="digModel" v-if="isModel" @click="closeWin" :style="{'z-index':currIndex}" class="zi-100 dialog__overlay flex ba-4 w-all h-all"></section>
+      <section ref="main" :style="bodyStyle" class="zi-120 bc-fff dialog__content sha-card flex-line fd-c abs wi-250 ra-3 m-auto">
         <!-- 头部 -->
-        <div v-if="isHeader" :id="'fy-dialog'+zindex" class="_dialog_title" data-type='move'>
-          <span v-html="title"></span>
-          <div @click.stop="closeWin">
-            <span class="_diglog_close">✖</span>
-          </div>
+        <div ref="hearder" style="cursor: move;border-top-left-radius: 3px;border-top-right-radius: 3px;" class="noselect ai-c pl10 jc-b flex w-all bc-f2 h-45">
+          <span class="fs-15" v-html="title"></span>
+          <span @click.stop="closeWin" class="hand fc-888 fs-18 pp10">✖</span>
         </div>
-        <!-- body -->
-        <div class="_dialog_box">
+        <!-- 内容 -->
+        <div ref="bodys" class="flex-1 w-all">
           <slot></slot>
         </div>
-        <!-- bottom -->
-        <div class="_dialog_bottom">
-          <slot name="footer"></slot>
-        </div>
+        <!-- 底部 -->
+        <slot name="footer"></slot>
       </section>
     </section>
   </transition>
 </template>
 
 <script lang='ts'>
-import { Vue, Prop, Model, Watch, Ref } from 'vue-property-decorator';
-export default class dig extends Vue {
+import { Vue, Prop, Model, Watch } from 'vue-property-decorator';
+export default class App extends Vue {
   // 内容区以外是否可以点击关闭
   @Prop({ default: true, type: Boolean }) fullClose;
   // 是否显示标题头
@@ -33,96 +29,79 @@ export default class dig extends Vue {
   //显示遮罩层？
   @Prop({ default: true, type: Boolean }) isModel;
   // 宽度
-  @Prop({ default: "300", type: [String, Number] }) width;
-  // 最大宽度
-  @Prop({ default: "300", type: [String, Number] }) maxWidth;
-  // 最小宽度
-  @Prop({ default: "100", type: [String, Number] }) minWidth;
+  @Prop({ default: "", type: [String, Number] }) width;
   // 高度
-  @Prop({ default: 100, type: [String, Number] }) height;
+  @Prop({ default: 9000, type: [String, Number] }) zindex;
   // 标题可以是html 如<span class='red'>标题</span>
   @Prop({ default: '标题', type: String }) title;
   // 显示/关闭
   @Model('modelValue', { type: Boolean, default: false }) value!: boolean
-  @Ref('dialog') dialog;
 
-  startX: Number = 0;
-  startY: Number = 0;
-  oldTop: Number = 0;
-  oldLeft: Number = 0;
-  top: Number = 0;
-  left: Number = 0;
-  max: Boolean = false;
-  zindex: Number = 9000;
-  currWidth = 0;
-  currHeight = 0;
-  isFirst = true;
+  isMove = false;
+  currIndex = 0;
+  mWidth = 0;
+  mHeight = 0;
 
-  get setWidth() {
-    if (this.width.includes('%')) {
-      return this.width;
-    } else if (!isNaN(this.width)) {
-      return this.width + 'px';
+  initDig() {
+    this.mWidth = this.$refs.main && this.$refs.main.offsetWidth || 0;
+    this.mHeight = this.$refs.main && this.$refs.main.offsetHeight || 0;
+    this.setDigIndex();
+    if (this.value) {
+      this.$refs.hearder.addEventListener('mousedown', e => {
+        if (e.button === 0) { // 鼠标左键按下
+          let x = e.pageX - this.$refs.main.offsetLeft;  // 鼠标与窗口边框距离
+          let y = e.pageY - this.$refs.main.offsetTop;
+          let maxW = window.innerWidth; // 最大拖动位置（不能拖离页面可视区）
+          let maxH = window.innerHeight;
+          document.onmousemove = (e) => { // 鼠标移动
+            let loginX = e.pageX;
+            let loginY = e.pageY;
+            if (loginX < 0) loginX = 0;
+            if (loginX > maxW) loginX = maxW;
+            if (loginY < 0) loginY = 0;
+            if (loginY > maxH) loginY = maxH;
+            this.$refs.main.style.left = loginX - x + 'px';
+            this.$refs.main.style.top = loginY - y + 'px';
+          }
+          document.onmouseup = (el) => {  // 鼠标抬起，清除鼠标移动事件
+            document.onmousemove = null;
+          }
+        }
+      })
     }
-    return this.width
   }
 
   get bodyStyle() {
-    let width = this.width;
-    if (!isNaN(this.width)) {
-      width = this.width + 'px';
-    }
-    if (this.currWidth) {
-      if (this.currWidth < Number(this.minWidth.replace(/[^\d]/g, ''))) {
-        width = this.minWidth;
+    let mwidth = this.mWidth;
+    if (this.width) {
+      if (this.width.includes('%')) {
+        mwidth = document.documentElement.clientWidth * (Number(this.width.replace(/[^\d]/g, "")) / 100)
       } else {
-        width = this.currWidth + 'px';
+        mwidth = this.width.replace(/[^\d]/g, '');
       }
     }
-    let top = (document.documentElement.clientHeight - this.currHeight) / 3.5;
-    let left = (document.documentElement.clientWidth - Number(width.replace(/[^\d]/g, ''))) / 2
+    if (mwidth < 250) {
+      mwidth = 250;
+    }
+    let left = document.documentElement.clientWidth / 2 - Number(mwidth) / 2;
+    let top = document.documentElement.clientHeight / 2 - Number(this.mHeight) / 2;
+    if (this.width) {
+      return {
+        'width': mwidth + 'px',
+        'top': top * 0.65 + 'px',
+        'left': left + 'px'
+      }
+    }
     return {
-      'width': width,
-      'top': top + 'px',
+      'top': top * 0.65 + 'px',
       'left': left + 'px'
     }
   }
 
-  startMove(e) { // 鼠标按下
-    if (e.button === 0) { // 鼠标左键按下
-      let id: any = 'dig' + (Number(this.zindex) + 1)
-      let digs: any = document.getElementById(id);
-      let x = e.pageX - digs.offsetLeft;  // 鼠标与窗口边框距离
-      let y = e.pageY - digs.offsetTop;
-      let maxW = window.innerWidth; // 最大拖动位置（不能拖离页面可视区）
-      let maxH = window.innerHeight;
-      document.onmousemove = (e) => { // 鼠标移动
-        let loginX = e.pageX;
-        let loginY = e.pageY;
-        if (loginX < 0) loginX = 0;
-        if (loginX > maxW) loginX = maxW;
-        if (loginY < 0) loginY = 0;
-        if (loginY > maxH) loginY = maxH;
-        digs.style.left = loginX - x + 'px';
-        digs.style.top = loginY - y + 'px';
-      }
-      document.onmouseup = (el) => {  // 鼠标抬起，清除鼠标移动事件
-        document.onmousemove = null;
-      }
-    }
-  }
-
-  private closeWin() {
-    this.isFirst = false;
-    this.$emit('update:modelValue', false)
-  }
-
-
-  @Watch('modelValue')
-  btnModel(newVal, oldVal) {
-    let dig: any = document.getElementsByClassName('_dialog');
-    let maxZindex: any = 1000;
-    if (newVal) {
+  setDigIndex() {
+    let dig: any = document.getElementsByClassName('DIALOGFAG');
+    let maxZindex: any = this.zindex;
+    if (this.value) {
       if (dig.length) {
         for (let i = 0; i < dig.length; i++) {
           dig[i].children[0].style.display = "none";
@@ -131,9 +110,10 @@ export default class dig extends Vue {
           }
         }
       }
-      if (this.zindex == 1000) {
-        this.zindex = parseInt(maxZindex) + 1;
+      if (!this.currIndex) {
+        this.currIndex = parseInt(maxZindex) + 1;
       }
+      this.$refs.digModel.style.display = "";
     } else {
       if (dig.length > 1) {
         let ids: any = [];
@@ -148,79 +128,50 @@ export default class dig extends Vue {
     }
   }
 
-  updated() {
-    if (this.$refs.dialog && this.value) {
-      this.currWidth = (this.$refs.dialog as HTMLElement).offsetWidth;
-      this.currHeight = (this.$refs.dialog as HTMLElement).offsetHeight;
-      document.getElementById('fy-dialog' + this.zindex)?.addEventListener('mousedown', this.startMove)
+  private closeWin() {
+    this.$emit('update:modelValue', false)
+  }
+
+  @Watch('value')
+  changeValue() {
+    if (this.value) {
+      document.body.className = document.body.className + ' hideScrol';
+    } else {
+      document.body.className = document.body.className.replace(' hideScrol', "");
     }
+    this.$nextTick(() => {
+      this.initDig();
+    })
+  }
+
+  updated() {
+
   }
 }
 </script>
 
 <style lang='less'>
-._dialog {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  .model {
-    width: 100%;
-    height: 100%;
-    opacity: 0.4;
-    background-color: #000;
-  }
-  ._dialog_body {
-    min-width: 240px;
-    background: #fff;
-    position: absolute;
-    margin: 0 auto;
-    border-radius: 5px;
-    min-height: 30px;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    ._dialog_title {
-      height: 45px;
-      cursor: move;
-      align-items: center;
-      user-select: none;
-      width: 100%;
-      background-color: #f2f2f2;
-      border-top-left-radius: 5px;
-      border-top-right-radius: 5px;
-      display: flex;
-      span {
-        flex: 1;
-        font-size: 15px;
-        margin-left: 15px;
-      }
-      ._diglog_close {
-        width: 33px;
-        margin-right: 10px;
-        cursor: pointer;
-        font-size: 18px;
-        padding: 10px 0;
-      }
-    }
-    ._dialog_box {
-      flex: 1;
-      width: 100%;
-    }
-  }
+.hideScrol {
+  height: 100vh;
+  overflow: hidden;
 }
 
-.dialog-enter-active,
+.dialog-enter-active{
+  
+}
 .dialog-leave-active {
   transition: all 0.2s;
 }
-.dialog-enter-active .dialog,
-.dialog-leave-active .dialog {
+.dialog-enter-active .dialog__content{
+
+}
+.dialog-leave-active .dialog__content {
+  top:0;
+  left: 0;
   transition: all 0.2s;
 }
-.dialog-enter .dialog,
-.dialog-leave-to .dialog {
+.dialog-enter .dialog__content,
+.dialog-leave-to .dialog__content {
   transform: scale3d(0.1, 0.1, 0.1);
 }
 .dialog-enter,

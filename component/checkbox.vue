@@ -8,7 +8,9 @@
         d="M171.434667 85.333333A86.186667 86.186667 0 0 0 85.333333 171.434667V852.48A86.186667 86.186667 0 0 0 171.434667 938.666667H852.48A86.186667 86.186667 0 0 0 938.666667 852.565333V171.52A86.186667 86.186667 0 0 0 852.565333 85.333333H171.52z m0-85.333333H852.48C947.029333 0 1024 76.8 1024 171.434667V852.48A171.52 171.52 0 0 1 852.565333 1024H171.52A171.52 171.52 0 0 1 0 852.565333V171.52C0 76.970667 76.8 0 171.434667 0z">
       </path>
     </svg>
-    <span class="ml6" v-if="item.label">{{item.label}}</span>
+    <div class="ml6 flex-line itemline ai-c" v-if="item.label">
+      <slot :item="{...item,index}">{{item.label}}</slot>
+    </div>
   </div>
 </template>
 
@@ -54,7 +56,7 @@ export default class checkbox extends Vue {
             return { value: v, label: v, select: curr.some(s => String(s) == String(v)), disable }
           } else {
             let disable = this.exclude && this.exclude.map(v => String(v)).includes(v[this.parm.value]) || false;
-            return { value: v[this.parm.value], label: v[this.parm.label], select: curr.some(s => String(v[this.parm.value]) === String(s)), disable }
+            return {...v, value: v[this.parm.value], label: v[this.parm.label], select: curr.some(s => String(v[this.parm.value]) === String(s)), disable }
           }
         })
       } else {
@@ -76,6 +78,7 @@ export default class checkbox extends Vue {
   handSelect(item) {
     if (item.disable) return;
     if (typeof this.value === "boolean") {
+      this.$emit('update:modelValue', !this.value);
       return item.value;
     } else {
       let curr = [];

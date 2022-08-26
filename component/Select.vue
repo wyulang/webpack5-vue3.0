@@ -3,7 +3,7 @@
     <div @click="onSelect" @mouseleave="btnMouse('leave')" @mousemove="btnMouse('move')" class="rel w-all">
       <input ref="selectInput" v-if="lazy" :readonly="isReadonly" @input="onInput" :placeholder="placeholder" :disabled="disabled" v-model="lazyLabel" :class="inputClass" class="w-all line-1 hand ipt" type="text">
       <input ref="selectInput" v-else :readonly="isReadonly" @input="onInput" :placeholder="placeholder" :disabled="disabled" v-model="currValue.label" :class="inputClass" class="w-all line-1 hand ipt" type="text">
-      <svg v-if="!isClear" style="transition: all 0.15s;background-color:#fff" :class="{'arrow':visible}" class="abs ar5 drop abst w-22 h-22" viewBox="0 0 1024 1024">
+      <svg v-if="!isClear" style="transition: all 0.15s;" :class="{'arrow':visible}" class="abs ar5 drop abst w-22 h-22" viewBox="0 0 1024 1024">
         <path d="M346.453333 396.373333L512 561.92l165.546667-165.546667a42.496 42.496 0 1 1 60.16 60.16l-195.84 195.84a42.496 42.496 0 0 1-60.16 0L285.866667 456.533333a42.496 42.496 0 0 1 0-60.16c16.64-16.213333 43.946667-16.64 60.586666 0z" fill="#aaa"></path>
       </svg>
       <svg style="fill:#aaa" v-if="isClear" @click.stop="changeClose" class="abs w-18 h-18 ar5 hand iconfix close abst" viewBox="0 0 1024 1024">
@@ -13,13 +13,15 @@
       </svg>
     </div>
     <transition name="select">
-      <div :style="{'top':`${options.inputHeight+4}px`}" v-show="visible" class="_selects_dropdown abs zi-8888 ra-5 hidden ar0 al0">
+      <div :style="{'top':`${options.inputHeight+4}px`,width:width}" v-show="visible" class="_selects_dropdown abs zi-8888 ra-5 hidden ar0 al0">
         <scrollbar :auto="options.valueHeight" v-if="isRefresh" maxHeight="220">
           <div v-if="path.length" class="flex ra-5 hidden bc-fff w-all fd-c">
             <div :class="{'_is_select fb':currValue.value==item.value,'is_dis':(item.disabled&&currValue.value!=item.value)}" @click="selectItem(item)" v-for="(item,index) in path" class="hand h-34">
-              <slot :item="item">
-                <div :class="setStyle(item)" class="flex  h-all w-all pl15 ai-c">{{item.label}}</div>
-              </slot>
+              <div :class="setStyle(item)" class="flex h-all w-all pl15 ai-c">
+                <slot :item="{...item,index}">
+                  {{item.label}}
+                </slot>
+              </div>
             </div>
           </div>
           <div @click="visible=false" v-else class="flex hand h-40 ra-5 hidden bc-fff w-all ai-c jc-c">
@@ -43,6 +45,7 @@ import scrollbar from './scroll.vue';
 export default class App extends Vue {
   @Prop({ type: String, default: "w-all" }) class;
   @Prop({ type: String, default: "small" }) size;
+  @Prop({ type: String, default: "auto" }) width;
   // 懒加载 return [] 输入查询 远程搜索
   @Prop({ type: Function }) lazy;
   // 显示清空选项
@@ -286,7 +289,7 @@ export default class App extends Vue {
 <style lang='less'>
 ._select {
   .arrow {
-    transform: rotate(-180deg) translateY(50%);
+    transform: rotate(-180deg) translateY(50%) !important;
   }
   .is-select {
     border-color: #57a3f3;

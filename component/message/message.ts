@@ -6,6 +6,7 @@ import MessageMsg from './msg.vue';
 let seed = 0;
 let instances: any = [];
 let zindex = 9111;
+let isPhone = /(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)
 
 const Message = (opts, callback = null) => {
   if (typeof opts === 'string') {
@@ -42,7 +43,7 @@ const Message = (opts, callback = null) => {
     zindex: zindex,
   }
 
-  container.className = `_message`;
+  container.className =isPhone? `__app _message`:'__pc _message';
   const vm = createVNode(MessageMsg, options);
   instances.push({ vm });
 

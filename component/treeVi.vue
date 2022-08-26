@@ -30,8 +30,8 @@
       </div>
       <!-- children -->
       <div v-if="item.children.length&&item.open" class="w-all">
-        <tree @nodeSelect="nodeSelect" @changeFirst="changeFirst" :isFoot="item.children.length" :data="item.children" :only="only" :expand="expand" :lineClass="lineClass" v-model="value" :props="props" :parent="item" :level="level+1">
-          <slot :node="{...data.node}"></slot>
+        <tree @nodeSelect="nodeSelect" v-slot="data" :single="single" :check="check" @changeFirst="changeFirst" :isFoot="item.children.length" :data="item.children" :only="only" :expand="expand" :lineClass="lineClass" v-model="value" :props="props" :parent="item" :level="level+1">
+          <slot :node="data.node"></slot>
         </tree>
       </div>
     </section>
@@ -47,14 +47,23 @@ import { isString, isArray, isObject } from '@lib/lang';
   name: "tree"
 })
 export default class App extends Vue {
+  // 行样式
   @Prop({ type: String, default: "" }) lineClass;
+  // 当前几级，不用传，不用管
   @Prop({ type: Number, default: 0 }) level;
-  // 
+  // 是否单选，单选就不会连带勾选下级，只选当前NODE
   @Prop({ type: Boolean, default: false }) only;
+  // 是否单选，单选就不会连带勾选下级，只选当前NODE
+  @Prop({ type: Boolean, default: false }) single;
+  // 目前没用到
   @Prop({ type: Number, default: 0 }) isFoot;
+  // 是否展开所有
   @Prop({ type: Boolean, default: false }) expand;
+  //树型数据
   @Prop({ type: Array, default: [] }) data;
+  // 这个不用传
   @Prop({ type: Object, }) parent;
+  // 没用到
   @Prop({ type: Boolean, default: true }) check;
   // 配置选项
   @Prop({ type: [Array, Object, String], default: ['label', 'value'] }) props;
@@ -85,7 +94,8 @@ export default class App extends Vue {
         children: v[this.parm.child] || [],
         level: this.level,
         open: open,
-        check: check
+        check: check,
+        ...v
       }
     })
   }
@@ -125,7 +135,7 @@ export default class App extends Vue {
       }
       let childLen = item[this.parm.child].length;
       if (item[this.parm.child] && childLen) {
-        if (!this.only) {
+        if (!this.only&&!this.single) {
           let nex = item[this.parm.child].filter(v => this.value.map(s => String(s)).includes(String(v[this.parm.value])))
           if (nex.length && nex.length < childLen) {
             item.check = 1;
@@ -153,10 +163,15 @@ export default class App extends Vue {
     this.changeFirst(false)
     let item = this.data[index];
     item.check = item.check == 2 ? 0 : 2;
+
     if (!this.only) {
       this.selectChild(item.children, item)
     }
-    this.nodeSelect({ low: 1 })
+    if (this.single) {
+      this.nodeSelect({ low: 1, single: { value: String(item[this.parm.value]) } })
+    } else {
+      this.nodeSelect({ low: 1 })
+    }
   }
 
   btnNode(index) {
@@ -174,7 +189,7 @@ export default class App extends Vue {
 
   @Emit('nodeSelect')
   nodeSelect(data) {
-    if (!data.low&&!this.only) {
+    if (!data.low && !this.only) {
       this.data.find(item => item[this.parm.value] == data.value).check = data.check
     }
     let currSelect = this.data.filter(v => v.check == 2).length;
@@ -197,6 +212,9 @@ export default class App extends Vue {
     }
 
     if (!this.level) {
+      if (this.single) {
+        this.setSingle(this.data, data.single.value)
+      }
       this.childValue = [];
       this.getNode(this.data, this.childValue);
       this.$emit('update:modelValue', this.childValue);
@@ -204,7 +222,25 @@ export default class App extends Vue {
     if (this.only) {
       return { check, value: false }
     }
-    return { check, value: this.parent && this.parent.value }
+
+    if (this.single) {
+      return { value: this.parent && this.parent.value, low: 1, single: data.single }
+    } else {
+      return { check, value: this.parent && this.parent.value }
+    }
+  }
+
+  setSingle(list, data) {
+    list.forEach(item => {
+      if (String(item[this.parm.value]) == data) {
+        item.check = 2;
+      } else {
+        item.check = 0;
+      }
+      if (item[this.parm.child]) {
+        this.setSingle(item[this.parm.child], data)
+      }
+    })
   }
 
   get parm() {

@@ -1,15 +1,15 @@
 <template>
   <transition v-if="['success', 'warning', 'info', 'error','phone'].includes(type)" name="anmessage" @before-leave="onClose" @after-leave="destroy">
     <section :style="messageStype" :class="messageClass" @mouseenter="clearTimer" @mouseleave="startTimer" v-show="visible">
-      <svg v-if="type!='phone'&&!icon" class="w-18 h-18 mr10" viewBox="0 0 1024 1024">
+      <svg style="min-width:18px;min-height:18px;" v-if="type!='phone'&&!icon" class="w-18 h-18 mr10" viewBox="0 0 1024 1024">
         <path :d="curricon[type]"></path>
       </svg>
       <span v-if="icon" class="iconfont mr10 icon"></span>
-      <div class="fs-13" v-html="message"></div>
+      <div class="fs-13 wrap" v-html="message"></div>
     </section>
   </transition>
 
-  <section v-else class="fixed al0 at0 flex ai-c jc-c zi-8888 ar0 ab0 ba-2">
+  <section v-else style="z-index: 9111;" class="fixed al0 at0 flex ai-c jc-c ar0 ab0 ba-2">
     <transition name="anmessage">
       <div :class="{'wb-70':isPhone,'wa-420 mb100':!isPhone}" class="bc-fff wi-300 sha-card ra-4">
         <!-- header -->
@@ -61,7 +61,7 @@ export default class App extends Vue {
   // 图标
   @Prop({ type: String, default: '' }) icon;
   // z-index
-  @Prop({ type: Number, default: 8888 }) zindex;
+  @Prop({ type: Number, default: 9111 }) zindex;
   // top高度
   @Prop({ type: Number, default: 10 }) offset;
   // 取消铵钮文案

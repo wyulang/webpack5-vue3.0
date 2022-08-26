@@ -14,7 +14,7 @@
 </template>
 
 <script lang='ts'>
-import { Vue, Prop, Model } from 'vue-property-decorator';
+import { Vue, Prop, Model,Watch } from 'vue-property-decorator';
 export default class App extends Vue {
   @Prop({ type: String, default: "标题" }) title;
   // 遮罩 开启，关闭
@@ -42,6 +42,15 @@ export default class App extends Vue {
       'main-show': this.value,
       'main-hide': !this.value,
       'inner': this.inner
+    }
+  }
+
+  @Watch('value')
+  changeValue() {
+    if (this.value) {
+      document.body.className = document.body.className + ' hideScrol';
+    } else {
+      document.body.className = document.body.className.replace(' hideScrol', "");
     }
   }
 
@@ -79,6 +88,10 @@ export default class App extends Vue {
 </script>
 
 <style lang='less'>
+.hideScrol {
+  height: 100vh;
+  overflow: hidden;
+}
 .drawer {
   /* 遮罩 */
   .mask-show {

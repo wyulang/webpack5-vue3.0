@@ -19,7 +19,7 @@
         <span :class="icon" v-else class="iconfont"></span>
         <span v-if="tip" class="fs-12 tip wrap centers fc-999 pl20 pr20">{{tip}}</span>
       </div>
-      <div v-else :style="{'background-image':`url('${value}')`}" class="w-all bc-f6  bs-c rel ra-5 h-all flex-1">
+      <div v-else :style="{'background-image':`url('${value}')`}" class="w-all bc-f6  bs-c rel bp-all ra-5 h-all flex-1">
         <div class="w-all abs al0 boxs ra-5  h-all ba-3 ra-6 ai-c jc-c">
           <svg t="1624603187836" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7147" width="16" height="16">
             <path
@@ -51,7 +51,7 @@ export default class App extends Vue {
   // 上传文件大小
   @Prop({ type: [String, Number], default: 0 }) max;
   // 当一个页面多次使用时可用这个返回类型 传什么返回什么 同index 参数相同，可以用index,也可以用ftype来进行判断
-  @Prop({ type: [String,Object], default: '' }) ftype;
+  @Prop({ type: [String,Object,Number], default: '' }) ftype;
   // 框内提示语
   @Prop({ type: String, default: '' }) tip;
   // 框内ICON 图标

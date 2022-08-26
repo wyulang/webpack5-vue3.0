@@ -82,7 +82,7 @@ export default class App extends Vue {
 
   get showClose() {
     if (this.isHover && this.clear) {
-      if (typeof this.value == "string") {
+      if (typeof this.value == "string" || typeof this.value == 'number' || typeof this.value == 'boolean') {
         return !!this.value
       } else {
         return this.value.length

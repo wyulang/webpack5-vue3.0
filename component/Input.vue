@@ -2,8 +2,7 @@
   <div :class="fixClass" @mouseover="isHover=true" @mouseleave="isHover=false" class="rel _input">
     <span v-if="prefix" :class="prefix" class="iconfont abs al7 zi-120 abst"></span>
     <input v-if="inputType!='number'" :autocomplete="autocomplete" :maxlength="maxlength" :disabled="disabled" :readonly="readonly" @focus="onFocus" :placeholder="placeholder" @input="onInput" @blur="onBlur" v-model="value" :style="fixStyle" :class="inputClass" class="w-all ipt zi-110" :type="inputType">
-    <input v-if="inputType=='number'&&decimal" v-number :autocomplete="autocomplete" :maxlength="maxlength" :disabled="disabled" :readonly="readonly" @focus="onFocus" :placeholder="placeholder" @input="onInput" @blur="onBlur" v-model="value" :style="fixStyle" :class="inputClass" class="w-all ipt zi-110" type="text">
-    <input v-if="inputType=='number'&&!decimal" v-number:0 :autocomplete="autocomplete" :maxlength="maxlength" :disabled="disabled" :readonly="readonly" @focus="onFocus" :placeholder="placeholder" @input="onInput" @blur="onBlur" v-model="value" :style="fixStyle" :class="inputClass" class="w-all ipt zi-110" type="text">
+    <input v-else :autocomplete="autocomplete" :maxlength="maxlength" :disabled="disabled" :readonly="readonly" @focus="onFocus" :placeholder="placeholder" @input="onInput" @blur="onBlur" v-model="value" :style="fixStyle" :class="inputClass" class="w-all ipt zi-110" type="text">
     <span v-if="suffix&&!isHover&&!suftext" :class="suffix" class="iconfont abs ar7 zi-120 abst"></span>
     <span v-if="suftext" ref="suftext" class="iconfont fc-bbb fs-12 abs ar7 zi-120 abst">{{suftext}}</span>
     <svg style="fill:#ccc" v-if="isHover&&value&&clear" :class="{'ar25':type=='serch','ar7':type!='serch'}" @click.stop="onClear" class="abs iconfix hand close w-17 h-17 zi-120 abst" viewBox="0 0 1024 1024">
@@ -41,8 +40,6 @@ export default class App extends Vue {
   @Prop({ type: [String, Number], default: "off" }) maxlength;
   @Prop({ type: [Boolean], default: false }) readonly;
   @Prop({ type: [Boolean], default: false }) disabled;
-  // 当type为number时，是否允许小数点
-  @Prop({ type: [Boolean], default: true }) decimal;
   // 显示清空按钮
   @Prop({ type: Boolean, default: false }) clear;
   @Model('modelValue', { default: "" }) value: any;
