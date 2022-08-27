@@ -14,7 +14,7 @@
     </div>
     <transition name="select">
       <div :style="{'top':`${options.inputHeight+4}px`,width:width}" v-show="visible" class="_selects_dropdown abs zi-8888 ra-5 hidden ar0 al0">
-        <scrollbar :auto="options.valueHeight" v-if="isRefresh" maxHeight="220">
+        <scrollbar :auto="options.valueHeight" maxHeight="220">
           <div v-if="path.length" class="flex ra-5 hidden bc-fff w-all fd-c">
             <div :class="{'_is_select fb':currValue.value==item.value,'is_dis':(item.disabled&&currValue.value!=item.value)}" @click="selectItem(item)" v-for="(item,index) in path" class="hand h-34">
               <div :class="setStyle(item)" class="flex h-all w-all pl15 ai-c">
@@ -135,15 +135,10 @@ export default class App extends Vue {
   }
 
   onRefresh() {
-    this.isRefresh = false;
-    this.isOpen = true;
     let index = this.path.findIndex(v => { return v.value == this.value });
     index = index ? (index - 3) : 0;
     index = index < 0 ? 0 : index;
     this.options.valueHeight = index * 34;
-    this.$nextTick(() => {
-      this.isRefresh = true;
-    })
   }
 
   get parm() {
@@ -251,6 +246,7 @@ export default class App extends Vue {
   }
 
   onSelect() {
+    this.onRefresh();
     if (this.disabled) return;
     if (this.visible) {
       this.visible = false;
@@ -258,9 +254,6 @@ export default class App extends Vue {
       this.visible = !this.visible;
     }
     document.addEventListener("click", this.setSelectPop);
-    if (!this.isOpen) {
-      this.onRefresh();
-    }
   }
 
   btnMouse(type) {

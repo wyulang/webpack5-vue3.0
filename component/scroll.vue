@@ -18,6 +18,7 @@ export default class App extends Vue {
   @Prop({ type: [String, Number], default: 0 }) width;
   @Prop({ type: [String, Number], default: "" }) maxHeight;
   @Prop({ type: [String, Number], default: "" }) height;
+  // 指定滚动到指定位置
   @Prop({ type: [String, Number], default: "" }) auto;
 
   visible = false;
@@ -150,7 +151,10 @@ export default class App extends Vue {
     return value
   }
 
+  // 是否滚动过
+  runScroll = false;
   onScroll(e) {
+    this.runScroll = true;
     // const offset = Math.abs(e.target.getBoundingClientRect().top - e.clientY)
     this.moveY = (e.srcElement.scrollTop * 100) / this.parentHeight;
     this.changeScroll({
@@ -162,31 +166,35 @@ export default class App extends Vue {
     })
   }
 
-  isAutoFirst = false;
+
   initScroll() {
-    if (this.auto && !this.isAutoFirst) {
-      this.isAutoFirst = true;
+    // 当有auto值时，且没有滚动过
+    if (this.auto && !this.runScroll) {
       this.moveY = this.moveY = (this.auto * 100) / this.parentHeight;
       this.$refs.main.scrollTop = this.auto;
     }
   }
 
   mounted() {
-    this.parentHeight = this.$el.offsetHeight;
-    this.scrollHeight = this.$refs.main.scrollHeight;
-    this.initScroll();
+    this.$nextTick(() => {
+      this.parentHeight = this.$el.offsetHeight;
+      this.scrollHeight = this.$refs.main.scrollHeight;
+      this.initScroll();
+    })
   }
 
   updated() {
-    // 当父级高度发生改变时
-    if (this.parentHeight != this.$el.offsetHeight) {
-      this.parentHeight = this.$el.offsetHeight
-    }
-    this.initScroll();
-    // 当内容高度发生改变时
-    if (this.scrollHeight != this.$refs.main.scrollHeight) {
-      this.scrollHeight = this.$refs.main.scrollHeight
-    }
+    this.$nextTick(() => {
+      // 当父级高度发生改变时
+      if (this.$el.offsetHeight && this.parentHeight != this.$el.offsetHeight) {
+        this.parentHeight = this.$el.offsetHeight
+      }
+      this.initScroll();
+      // 当内容高度发生改变时
+      if (this.$refs.main.scrollHeight && this.scrollHeight != this.$refs.main.scrollHeight) {
+        this.scrollHeight = this.$refs.main.scrollHeight
+      }
+    })
   }
 }
 </script>
